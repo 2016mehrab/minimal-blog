@@ -11,6 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import { useLogin } from "@/hooks/useLogin";
+import { Alert, AlertDescription } from "./ui/alert";
 
 export function LoginForm({ className, ...props }) {
   const [formData, setFormData] = useState({
@@ -23,58 +25,45 @@ export function LoginForm({ className, ...props }) {
     general: "",
   });
 
+  const { loginUser, isLoading, error, authData } = useLogin();
+
   const handleChange = (e) => {
-    e.preventDefault();
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-    console.table(formData);
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Reset errors
     setErrors({
       email: "",
       password: "",
       general: "",
     });
+  };
 
-    let hasErrors = false;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     const newErrors = {
-      email: "",
-      password: "",
+      email: !formData.email ? "Email is required" : "",
+      password: !formData.password ? "Password is required" : "",
       general: "",
     };
 
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-      hasErrors = true;
+    const hasErrors = newErrors.email || newErrors.password;
+    if (hasErrors) return setErrors(newErrors);
+
+    const res = await loginUser(formData);
+
+    if (!res.success && res.error) {
+      setErrors({
+        email: res.error.fieldErrors?.email || "",
+        password: res.error.fieldErrors?.password || "",
+        general: res.error.message || "",
+      });
+    } else {
+      console.log("login successful", res.data);
     }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-      hasErrors = true;
-    }
-
-    if (hasErrors) {
-      setErrors(newErrors);
-      return;
-    }
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      console.log("Form submitted successfully!", formData);
-    } catch (error) {
-      newErrors.general = "Failed to submit form. Please try again.";
-      setErrors(newErrors);
-    }
-
   };
-
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -100,7 +89,10 @@ export function LoginForm({ className, ...props }) {
                   required
                 />
                 {errors.email && (
-                  <p className="text-sm text-red-500">{errors.email}</p>
+                  <Alert variant="destructive">
+                    <AlertDescription>{errors.email}</AlertDescription>
+                  </Alert>
+                  // <p className="text-sm text-red-500">{errors.email}</p>
                 )}
               </div>
 
@@ -123,20 +115,27 @@ export function LoginForm({ className, ...props }) {
                   required
                 />
                 {errors.password && (
-                  <p className="text-sm text-red-500">{errors.password}</p>
+                  // <p className="text-sm text-red-500">{errors.password}</p>
+                  <Alert variant="destructive">
+                    <AlertDescription>{errors.password}</AlertDescription>
+                  </Alert>
                 )}
               </div>
 
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
+                <Button
+                  type="submit"
+                  className="w-full cursor-pointer"
+                  disabled={isLoading}
+                >
                   Login
                 </Button>
               </div>
             </div>
             {errors.general && (
-              <p className="text-sm text-red-500 text-center">
-                {errors.general}
-              </p>
+              <Alert variant="destructive">
+                <AlertDescription className={"justify-items-center"}>{errors.general}</AlertDescription>
+              </Alert>
             )}
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
