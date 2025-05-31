@@ -1,5 +1,6 @@
 import axios from "axios";
 import constants from "@/lib/constants";
+import { jwtDecode } from "jwt-decode";
 
 const URL = constants.API_URL + "auth/login";
 export const login = async ({ email, password }) => {
@@ -9,19 +10,16 @@ export const login = async ({ email, password }) => {
       password,
     });
 
-    // Extract the auth response data
-    const { accessToken, refreshToken, expiresIn } = response.data;
+    const { accessToken, expiresIn } = response.data;
 
-    // Optionally, you can store the tokens in localStorage or another storage mechanism
-    localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("refreshToken", refreshToken);
-    localStorage.setItem("expiresIn", expiresIn);
+      const user = jwtDecode(accessToken);
+      console.info(user);
 
     return {
       success: true,
       data: {
+        user,
         accessToken,
-        refreshToken,
         expiresIn,
       },
     };
@@ -40,7 +38,8 @@ export const login = async ({ email, password }) => {
         errorMessage = error.response.data?.message || errorMessage;
       }
     }
-    return {
+
+    throw {
       success: false,
       error: {
         message: errorMessage,

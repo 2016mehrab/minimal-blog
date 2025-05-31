@@ -1,26 +1,28 @@
 import { login } from "@/services/auth";
-import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
+import { useLocalStorage } from "./useLocalStorage";
 
 export const useLogin = () => {
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [authData, setAuthData] = useState(null);
+  const queryClient = useQueryClient();
+  const navigate =useNavigate();
+  const  [_,setToken] = useLocalStorage(null, 'auth');
 
-  const loginUser = async ({ email, password }) => {
-    setIsLoading(true);
-    setError(null);
-    setAuthData(null);
-
-    const result = await login({ email, password });
-
-    if (result.success) {
-      setAuthData(result.data);
-    } else {
-      setError(result.error);
+  const {
+    mutate:loginUser, isPending:isLoading , error, data:authData
+  } = useMutation({
+    mutationFn:({email, password})=>login({email,password})
+    ,
+    onSuccess:(rawAuthData)=>{
+      setToken(rawAuthData.data);
+      queryClient.setQueryData(['user'], rawAuthData.data);
+      navigate("/home", {replace:true});
+    },
+    onError:(err)=>{
+      console.error("error", err)
     }
-    setIsLoading(false);
-    return result;
-  };
+
+  })
   return { loginUser, isLoading, error, authData };
 };

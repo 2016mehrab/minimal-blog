@@ -15,15 +15,16 @@ import { useLogin } from "@/hooks/useLogin";
 import { Alert, AlertDescription } from "./ui/alert";
 
 export function LoginForm({ className, ...props }) {
+  const initialErrorState = {
+    email: "",
+    password: "",
+    general: "",
+  };
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-    general: "",
-  });
+  const [errors, setErrors] = useState(initialErrorState);
 
   const { loginUser, isLoading, error, authData } = useLogin();
 
@@ -33,11 +34,7 @@ export function LoginForm({ className, ...props }) {
       ...prev,
       [name]: value,
     }));
-    setErrors({
-      email: "",
-      password: "",
-      general: "",
-    });
+    setErrors(initialErrorState);
   };
 
   const handleSubmit = async (e) => {
@@ -52,17 +49,20 @@ export function LoginForm({ className, ...props }) {
     const hasErrors = newErrors.email || newErrors.password;
     if (hasErrors) return setErrors(newErrors);
 
-    const res = await loginUser(formData);
+     loginUser(formData, {
+      onError: (err) => {
+        console.log("inside loginform");
+        setErrors({
+          email: err.error.fieldErrors?.email || "",
+          password: err.error.fieldErrors?.password || "",
+          general: err.error.message || "",
+        });
+      },
+      onSuccess:(data)=>{
+        setErrors(initialErrorState);
+      }
+    });
 
-    if (!res.success && res.error) {
-      setErrors({
-        email: res.error.fieldErrors?.email || "",
-        password: res.error.fieldErrors?.password || "",
-        general: res.error.message || "",
-      });
-    } else {
-      console.log("login successful", res.data);
-    }
   };
 
   return (
@@ -134,7 +134,9 @@ export function LoginForm({ className, ...props }) {
             </div>
             {errors.general && (
               <Alert variant="destructive">
-                <AlertDescription className={"justify-items-center"}>{errors.general}</AlertDescription>
+                <AlertDescription className={"justify-items-center"}>
+                  {errors.general}
+                </AlertDescription>
               </Alert>
             )}
             <div className="mt-4 text-center text-sm">
