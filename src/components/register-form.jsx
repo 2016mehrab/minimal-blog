@@ -14,20 +14,25 @@ import { useState } from "react";
 import { useLogin } from "@/hooks/useLogin";
 import { Alert, AlertDescription } from "./ui/alert";
 import { Link } from "react-router";
+import { useRegister } from "@/hooks/useRegister";
 
-export function LoginForm({ className, ...props }) {
+export function RegisterForm({ className, ...props }) {
   const initialErrorState = {
+    name: "",
     email: "",
     password: "",
+    confirmPassword: "",
     general: "",
   };
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [errors, setErrors] = useState(initialErrorState);
 
-  const { loginUser, isLoading, error, authData } = useLogin();
+  const { registerUser, isLoading, error, authData } = useRegister();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,23 +47,34 @@ export function LoginForm({ className, ...props }) {
     e.preventDefault();
 
     const newErrors = {
+      name: !formData.name ? "Name is required" : "",
       email: !formData.email ? "Email is required" : "",
       password: !formData.password ? "Password is required" : "",
+      confirmPassword: !formData.confirmPassword
+        ? "Confirm Password is required"
+        : formData.password !== formData.confirmPassword
+        ? "Passwords do not match"
+        : "",
       general: "",
     };
 
-    const hasErrors = newErrors.email || newErrors.password;
+    const hasErrors =
+      newErrors.email ||
+      newErrors.password ||
+      newErrors.name ||
+      newErrors.confirmPassword;
     if (hasErrors) return setErrors(newErrors);
 
-    loginUser(formData, {
+    registerUser(formData, {
       onError: (err) => {
-        console.log("inside loginform");
+        console.log("Inside registerUser onError");
         setErrors({
           email: err.error.fieldErrors?.email || "",
           password: err.error.fieldErrors?.password || "",
           general: err.error.message || "",
         });
       },
+
       onSuccess: (data) => {
         setErrors(initialErrorState);
       },
@@ -69,14 +85,34 @@ export function LoginForm({ className, ...props }) {
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+          <CardTitle>Register Your account</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your details below to get started
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
+              <div className="grid gap-3">
+
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  name="name"
+                  onChange={handleChange}
+                  id="name"
+                  type="text"
+                  value={formData.name}
+                  placeholder="Your Name"
+                  required
+                />
+                {errors.name && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{errors.name}</AlertDescription>
+                  </Alert>
+                  // <p className="text-sm text-red-500">{errors.email}</p>
+                )}
+              </div>
+
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -97,15 +133,7 @@ export function LoginForm({ className, ...props }) {
               </div>
 
               <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    to={"/forgot-password"}
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
+                <Label htmlFor="password">Password</Label>
                 <Input
                   onChange={(e) => handleChange(e)}
                   name="password"
@@ -122,13 +150,33 @@ export function LoginForm({ className, ...props }) {
                 )}
               </div>
 
+              <div className="grid gap-3">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input
+                  onChange={(e) => handleChange(e)}
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  required
+                />
+                {errors.confirmPassword && (
+                  // <p className="text-sm text-red-500">{errors.password}</p>
+                  <Alert variant="destructive">
+                    <AlertDescription>
+                      {errors.confirmPassword}
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </div>
+
               <div className="flex flex-col gap-3">
                 <Button
                   type="submit"
                   className="w-full cursor-pointer"
                   disabled={isLoading}
                 >
-                  Login
+                  Sign up
                 </Button>
               </div>
             </div>
@@ -140,17 +188,15 @@ export function LoginForm({ className, ...props }) {
               </Alert>
             )}
             <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
+              Already have an account?{" "}
               <Link
-                to={"/register"}
+                to={"/login"}
                 replace
                 className="underline underline-offset-4"
               >
-                Sign up
+                Login
               </Link>
-              {/* <a href="/register" className="underline underline-offset-4">
-                Sign up
-              </a> */}
+              {/* <a href="/login">Login</a> */}
             </div>
           </form>
         </CardContent>

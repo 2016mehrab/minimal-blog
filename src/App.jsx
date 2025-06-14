@@ -7,6 +7,11 @@ import Tag from "./Pages/Tag";
 import Home from "./Pages/Home";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Login from "./Pages/Login";
+import ProtectedRoutes from "./components/ProtectedRoutes";
+import Register from "./Pages/Register";
+import ResetPassword from "./Pages/ResetPassword";
+import ForgotPassword from "./Pages/ForgotPassword";
+import { Toaster } from "./components/ui/sonner";
 
 const App = () => {
   const queryClient = new QueryClient({
@@ -23,9 +28,9 @@ const App = () => {
         <Routes>
           <Route
             element={
-              //   <ProtectedRoutes>
+                <ProtectedRoutes>
               <AppLayout />
-              // {/* </ProtectedRoutes> */}
+              // </ProtectedRoutes>
             }
           >
             <Route index element={<Navigate replace to="home" />} />
@@ -35,8 +40,11 @@ const App = () => {
           </Route>
           {/* <Route path="*" element={<PageNotFound />} /> */}
           <Route path="/login" element={<Login />} />
-          {/* <Route path="/register" element={<Register />} /> */}
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
+        <Toaster/>
       </BrowserRouter>
     </QueryClientProvider>
   );
