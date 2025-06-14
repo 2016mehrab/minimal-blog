@@ -96,8 +96,42 @@ export const forgotPassword = async ({ email }) => {
     await axios.post(URL);
     return true;
   } catch (e) {
-    console.error("Service error",e.message);
+    console.error("Service error", e.message);
     throw new Error("Something happended try again later");
+  }
+};
+
+export const resetPassword = async ({ token, newPassword }) => {
+  try {
+    const URL = constants.API_URL + "auth/reset-password";
+    await axios.post(URL, {
+      token,
+      newPassword,
+    });
+
+    return { success: true, message: "Password reset successful!" };
+  } catch (error) {
+    let errorMessage = "An error occurred. Please try again later.";
+    let fieldErrors = {};
+
+    if (error.response) {
+      if (error.response.data.errors) {
+        errorMessage = error.response.data.message;
+        error.response.data.errors.forEach((err) => {
+          fieldErrors[err.field] = err.message;
+        });
+      } else {
+        errorMessage = error.response.data?.message || errorMessage;
+      }
+    }
+
+    throw {
+      success: false,
+      error: {
+        message: errorMessage,
+        fieldErrors,
+      },
+    };
   }
 };
 
