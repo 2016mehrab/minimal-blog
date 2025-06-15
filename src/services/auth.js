@@ -45,6 +45,17 @@ export const login = async ({ email, password }) => {
   }
 };
 
+export const logout = async () => {
+  try {
+    const URL = constants.API_URL + "auth/logout";
+    await axios.post(URL, null, { withCredentials: true });
+    return true;
+  } catch (error) {
+    console.error("Logout failed:", error.message);
+    throw new Error("Something happended try again later");
+  }
+};
+
 export const register = async ({ name, email, password }) => {
   try {
     const URL = constants.API_URL + "auth/register";
