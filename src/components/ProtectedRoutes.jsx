@@ -14,7 +14,7 @@ const ProtectedRoutes = () => {
     return <AppLayout />;
   }
 
-  console.info("user", user)
+  console.info("ProtectLayout got user:", user)
   return <Navigate to={"/login"} replace />;
 };
 export default ProtectedRoutes;
