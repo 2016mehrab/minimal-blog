@@ -88,9 +88,10 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    console.info("error response from res intercept",error.response)
 
     if (
-      error.response.status === 401 &&
+      error?.response?.status === 401 &&
     // dont retry if refresh request fails
       !originalRequest._retry &&
       originalRequest.url !== "/auth/refresh-token"

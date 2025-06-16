@@ -12,11 +12,14 @@ import CreateCategoryForm from "./CreateCategoryForm";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCategories } from "@/services/category";
 import { Button } from "./ui/button";
-import { PenIcon, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { useDeleteCategory } from "@/hooks/useDeleteCategory";
 import { toast } from "sonner";
+import EditCategoryForm from "./EditCategoryForm";
+import { useUser } from "@/hooks/useUser";
 
 const CategoryComponent = () => {
+  const { user, isLoading: isLoadingUser } = useUser();
   const {
     data: categories,
     isLoading,
@@ -28,7 +31,7 @@ const CategoryComponent = () => {
   });
   const { deleteCategory, isLoading: isDeleting } = useDeleteCategory();
 
-  if (isLoading)
+  if (isLoading || isLoadingUser)
     return (
       <>
         <div className="flex justify-between items-center mb-4">
@@ -38,6 +41,7 @@ const CategoryComponent = () => {
         <p>Loading categories...</p>
       </>
     );
+
   if (isError) {
     return (
       <>
@@ -45,7 +49,6 @@ const CategoryComponent = () => {
           <h2 className="text-2xl font-semibold">Categories</h2>
           <CreateCategoryForm />
         </div>
-        {/* Display the error message from the thrown Error object */}
         <p className="text-red-500">
           Error: {error?.message || "Failed to load categories."}
         </p>
@@ -53,11 +56,14 @@ const CategoryComponent = () => {
     );
   }
 
+  const isAdmin = user?.role.some((r) => r === "ROLE_ADMIN") || false;
+
   function handleDelete(id) {
     deleteCategory(id, {
       onSuccess: () => toast.success("Category deleted"),
-      onError: (err) =>
-        toast.error(err.message || "Failed to deleted category"),
+      onError: (err) => {
+        toast.error(err.message || "Failed to deleted category");
+      },
     });
   }
 
@@ -65,7 +71,7 @@ const CategoryComponent = () => {
     <>
       <div className="flex justify-between">
         <h2>Categories</h2>
-        <CreateCategoryForm />
+        {isAdmin && <CreateCategoryForm />}
       </div>
       <Table>
         <TableCaption>A list of available categories</TableCaption>
@@ -91,16 +97,20 @@ const CategoryComponent = () => {
                 </TableHead>
                 <TableHead className={"text-center"}>{postCount} </TableHead>
                 <TableHead className=" flex justify-center items-center  gap-1.5 outline-2 outline-emerald-600">
-                  <Button>
-                    {/* Add fill-none to prevent the icon from being filled */}
-                    <PenIcon />
-                  </Button>
-                  <Button
-                    disabled={isDeleting}
-                    onClick={() => handleDelete(id)}
-                  >
-                    <Trash />
-                  </Button>
+                  {isAdmin ? (
+                    <>
+                      <EditCategoryForm category={{ id: id, name: name }} />
+                      <Button
+                        disabled={isDeleting}
+                        onClick={() => handleDelete(id)}
+                      >
+                        <Trash />
+                      </Button>
+                    </>
+                  ) : (
+                    "-"
+                  )}
+
                 </TableHead>
               </TableRow>
             ))

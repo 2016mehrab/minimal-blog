@@ -65,6 +65,51 @@ export const fetchCategories = async () => {
   }
 };
 
+export const updateCategory = async ({ categoryId,categoryName }) => {
+  try {
+    const URL = constants.API_URL + "categories/"+categoryId;
+
+    const response = await apiClient.put(
+      URL,
+      {
+        name: categoryName,
+      },
+      { withCredentials: true }
+    );
+
+    const { id, name, postCount } = response.data;
+
+    return {
+      id,
+      name,
+      postCount,
+    };
+
+  } catch (error) {
+    console.error("Failed to create category:", error);
+    let errorMessage = "An error occurred. Please try again later.";
+    let fieldErrors = {};
+
+    if (error.response) {
+      if (error.response.status === 400 && error.response.data.errors) {
+        errorMessage = error.response.data.message;
+        error.response.data.errors.forEach((err) => {
+          fieldErrors[err.field] = err.message;
+        });
+      } else {
+        errorMessage = error.response.data?.message || errorMessage;
+      }
+    }
+
+    throw {
+      success: false,
+      error: {
+        message: errorMessage,
+        fieldErrors,
+      },
+    };
+  }
+};
 
 export const deleteCategory= async (id) => {
   try {
