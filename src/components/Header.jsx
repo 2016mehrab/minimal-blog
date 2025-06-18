@@ -20,7 +20,7 @@ const Header = () => {
     <header className="grid grid-cols-[1fr_2fr_1fr] p-4 justify-items-center bg-muted w-full outline-1 outline-amber-950">
       <div></div>
       <nav className="outline-1 outline-blue-500">
-        <ul className="flex space-x-4">
+        <ul className="flex space-x-4 flex-wrap">
           <li>
             <Button variant="ghost" asChild>
               <Link

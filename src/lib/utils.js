@@ -1,55 +1,113 @@
+import DOMPurify from "dompurify";
+import slugify from "slugify";
 import { clsx } from "clsx";
-import DOMPurify from 'dompurify';
 import { twMerge } from "tailwind-merge";
 import constants from "./constants";
+import hljs from "highlight.js";
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
 export function isTokenValid(token) {
-  if(!token || !token.accessToken || !token.user.exp) return false;
+  if (!token || !token.accessToken || !token.user.exp) return false;
   return Date.now() < token.user.exp - constants.FETCH_IF_EXPIRY_IN * 1000;
 }
 
-
-/**
- * Strips HTML headers (h1-h6) and other tags, then truncates the plain text.
- * @param {string} htmlString - The HTML content to process.
- * @param {number} maxLength - The maximum length of the plain text to return.
- * @returns {string} The processed and truncated plain text.
- */
-
 export function getTruncatedPlainText(htmlString, maxLength = 200) {
   if (!htmlString) {
-    return '';
+    return "";
   }
   const sanitizedHtml = DOMPurify.sanitize(htmlString, {
-    USE_PROFILES: { html: true }, // Ensure basic HTML is allowed for initial parsing
+    USE_PROFILES: { html: true },
   });
 
-  const tempDiv = document.createElement('div');
+  const tempDiv = document.createElement("div");
   tempDiv.innerHTML = sanitizedHtml;
 
-  // 3. Remove header elements (h1-h6) from the temporary DOM
-  ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img','pre', 'code'].forEach(tag => {
+  ["h1", "h2", "h3", "h4", "h5", "h6", "img", "pre", "code"].forEach((tag) => {
     const headers = tempDiv.querySelectorAll(tag);
-    console.log("headers " ,headers);
-    headers.forEach(header => header.remove());
+    headers.forEach((header) => header.remove());
   });
 
-  let text = tempDiv.textContent || tempDiv.innerText || '';
+  let text = tempDiv.textContent || tempDiv.innerText || "";
+  text = text.replace(/\s+/g, " ").trim();
 
-  text = text.replace(/\s+/g, ' ').trim();
-
-  // 6. Truncate the text
   if (text.length > maxLength) {
-    return text.substring(0, maxLength) + '...';
+    return text.substring(0, maxLength) + "...";
   }
 
   return text;
 }
 
+// --- GLOBAL DOMPURIFY CONFIGURATION ---
+// It's best to configure DOMPurify once at the entry point of your app
+// or in a utility file that's guaranteed to be imported first.
+// This ensures the hooks and allowed attributes are set before any sanitization calls.
+
+// Keep track of IDs globally or reset for each call if getSanitizedHTML is called often
+// For simplicity in a single file, we'll keep it inside the function for now,
+// but be aware that `usedIds` would ideally be managed per `sanitize` call.
+// This example will continue to reset it per call, which is safer.
+
+let usedIdsForHeadings = new Set();
+
+// Register the hooks and allowed attributes *globally*
+// This is more reliable than passing them directly to `sanitize` when using profiles.
+DOMPurify.setConfig({
+  ADD_ATTR: ["target", "id", "class"], // Allow 'target' and 'id' globally
+  ADD_TAGS: ["span"],
+});
+
+DOMPurify.addHook("afterSanitizeAttributes", function (node) {
+  // Logic for target="_blank" and rel attributes
+  if (
+    node.tagName === "A" &&
+    node.hasAttribute("target") &&
+    node.getAttribute("target").toLowerCase() === "_blank"
+  ) {
+    let rel = node.getAttribute("rel") || "";
+    const requiredRel = ["noopener", "noreferrer"];
+    requiredRel.forEach((attr) => {
+      if (!rel.includes(attr)) {
+        if (rel) {
+          rel += ` ${attr}`;
+        } else {
+          rel = attr;
+        }
+      }
+    });
+    node.setAttribute("rel", rel.trim());
+  }
+
+  if (["H1", "H2", "H3"].includes(node.tagName)) {
+    // console.log("Processing heading:", node.tagName, "Text:", node.textContent); // Debugging line
+    let id =
+      node.id ||
+      slugify(node.textContent, {
+        lower: true,
+        strict: true,
+        trim: true,
+        replacement: "-",
+      });
+    let counter = 1;
+    let originalId = id;
+
+    while (usedIdsForHeadings.has(id)) {
+      id = `${originalId}-${counter}`;
+      ++counter;
+    }
+    usedIdsForHeadings.add(id);
+    node.setAttribute("id", id);
+    // console.log("Assigned ID:", id); // Debugging line
+  }
+});
+
+// Reset `usedIdsForHeadings` before each sanitization,
+// since the hook is global but the set of used IDs should be per call.
+DOMPurify.addHook("beforeSanitizeElements", function () {
+  usedIdsForHeadings = new Set();
+});
 
 /**
  * Sanitize HTML from given raw HTML
@@ -58,48 +116,21 @@ export function getTruncatedPlainText(htmlString, maxLength = 200) {
  */
 export function getSanitizedHTML(htmlString) {
   if (!htmlString) {
-    return '';
+    return "";
   }
 
-  // And ensure 'rel' is added for security when target="_blank"
-  const sanitizedHtml = DOMPurify.sanitize(htmlString, {
-    USE_PROFILES: { html: true }, // Ensure basic HTML is allowed for initial parsing
-    ADD_ATTR: ['target'], // Explicitly allow the 'target' attribute
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = htmlString;
 
-    // Use a hook to ensure 'rel="noopener noreferrer"' is always present
-    // when target="_blank" is used on anchor tags.
-    // This is the recommended secure way to handle it.
-    hooks: {
-      afterSanitizeAttributes: function (node) {
-        // Check if the node is an anchor tag and has target="_blank"
-        if (
-          node.tagName === 'A' &&
-          node.hasAttribute('target') &&
-          node.getAttribute('target').toLowerCase() === '_blank'
-        ) {
-          // Get existing rel attribute value
-          let rel = node.getAttribute('rel') || '';
-
-          // Ensure noopener and noreferrer are present
-          const requiredRel = ['noopener', 'noreferrer'];
-          requiredRel.forEach(attr => {
-            if (!rel.includes(attr)) {
-              if (rel) {
-                rel += ` ${attr}`; // Add with a space if rel already exists
-              } else {
-                rel = attr; // Set directly if rel is empty
-              }
-            }
-          });
-
-          node.setAttribute('rel', rel.trim()); // Apply the updated rel
-        }
-      },
-    },
+  tempDiv.querySelectorAll("pre code").forEach((el) => {
+    hljs.highlightElement(el);
   });
 
-  console.log("sanitizedhtml ")
-  console.info(sanitizedHtml);
-  console.log("end")
+  const highlightedHtmlString = tempDiv.innerHTML;
+
+  const sanitizedHtml = DOMPurify.sanitize(highlightedHtmlString, {
+    USE_PROFILES: { html: true },
+  });
+
   return sanitizedHtml;
 }

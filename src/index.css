@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "./App.css";
+@import 'highlight.js/styles/atom-one-dark.css';
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -117,6 +119,9 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  html{
+    scroll-behavior: smooth;
   }
   button:not(:disabled),
   [role="button"]:not(:disabled) {

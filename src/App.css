@@ -1,5 +1,4 @@
 /* Basic editor styles */
-@import 'highlight.js/styles/atom-one-dark.css';
 .tiptap {
   --purple: #8b5cf6; /* A standard purple, e.g., Tailwind's purple-500 */
   --purple-contrast: #6d28d9; /* A darker purple for hover, e.g., Tailwind's purple-700 */
@@ -78,15 +77,15 @@
   code {
     background-color: var(--purple-light);
     border-radius: 0.4rem;
-    color: var(--black);
+    color: var(--foreground);
     font-size: 0.85rem;
     padding: 0.25em 0.3em;
+    font-family: "JetBrainsMono", monospace;
   }
 
   pre {
-    background: var(--foreground);
     border-radius: 0.5rem;
-    color: var(--background);
+    /* color: var(--background); */
     font-family: "JetBrainsMono", monospace;
     margin: 1.5rem 0;
     padding: 0.75rem 1rem;
@@ -99,7 +98,7 @@
     }
 
     /* Code styling */
-    /* .hljs-comment,
+    .hljs-comment,
     .hljs-quote {
       color: #616161;
     }
@@ -148,7 +147,7 @@
 
     .hljs-strong {
       font-weight: 700;
-    } */
+    }
   }
 
   blockquote {
