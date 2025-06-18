@@ -1,11 +1,11 @@
-import Blog from '@/components/Blog'
+import PublishedPosts from '@/components/PublishedPosts'
+import Blog from '@/components/PublishedPosts'
 import React from 'react'
 
 const Home = () => {
   return (
     <>
-    
-    <Blog />
+    <PublishedPosts />
     </>
   )
 }

@@ -1,11 +1,6 @@
 import React from "react";
 import {
-  Table,
-  TableBody,
-  TableCaption,
   TableCell,
-  TableHead,
-  TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import CreateCategoryForm from "./CreateCategoryForm";
@@ -17,6 +12,7 @@ import { useDeleteCategory } from "@/hooks/useDeleteCategory";
 import { toast } from "sonner";
 import EditCategoryForm from "./EditCategoryForm";
 import { useUser } from "@/hooks/useUser";
+import TableComponent from "./TableComponent";
 
 const CategoryComponent = () => {
   const { user, isLoading: isLoadingUser } = useUser();
@@ -31,12 +27,13 @@ const CategoryComponent = () => {
   });
   const { deleteCategory, isLoading: isDeleting } = useDeleteCategory();
 
+  const isAdmin = user?.role.some((r) => r === "ROLE_ADMIN") || false;
   if (isLoading || isLoadingUser)
     return (
       <>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">Categories</h2>
-          <CreateCategoryForm />
+           {isLoadingUser ? null : isAdmin && <CreateCategoryForm />}
         </div>
         <p>Loading categories...</p>
       </>
@@ -47,7 +44,7 @@ const CategoryComponent = () => {
       <>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">Categories</h2>
-          <CreateCategoryForm />
+           {isLoadingUser ? null : isAdmin && <CreateCategoryForm />}
         </div>
         <p className="text-red-500">
           Error: {error?.message || "Failed to load categories."}
@@ -56,15 +53,42 @@ const CategoryComponent = () => {
     );
   }
 
-  const isAdmin = user?.role.some((r) => r === "ROLE_ADMIN") || false;
+  // const isAdmin = user?.role.some((r) => r === "ROLE_ADMIN") || false;
 
   function handleDelete(id) {
     deleteCategory(id, {
       onSuccess: () => toast.success("Category deleted"),
       onError: (err) => {
-        toast.error(err.message || "Failed to deleted category");
+        toast.error(err.message || "Failed to delete category");
       },
     });
+  }
+  function renderRow(category, index, { isAdmin, handleDelete, isDeleting }) {
+    return (
+      <TableRow key={category.id}>
+        <TableCell className="w-[100px]  text-center">
+          {category.name.toUpperCase()}
+        </TableCell>
+        <TableCell className={"text-center"}>{category.postCount} </TableCell>
+        <TableCell className=" flex justify-center items-center  gap-1.5 outline-2 outline-emerald-600">
+          {isAdmin ? (
+            <>
+              <EditCategoryForm
+                category={{ id: category.id, name: category.name }}
+              />
+              <Button
+                disabled={isDeleting}
+                onClick={() => handleDelete(category.id)}
+              >
+                <Trash />
+              </Button>
+            </>
+          ) : (
+            "-"
+          )}
+        </TableCell>
+      </TableRow>
+    );
   }
 
   return (
@@ -73,56 +97,15 @@ const CategoryComponent = () => {
         <h2>Categories</h2>
         {isAdmin && <CreateCategoryForm />}
       </div>
-      <Table>
-        <TableCaption>A list of available categories</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px] text-muted-foreground text-center">
-              NAME
-            </TableHead>
-            <TableHead className={"text-center text-muted-foreground"}>
-              POST COUNT
-            </TableHead>
-            <TableHead className="text-center text-muted-foreground">
-              ACTIONS
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {categories && categories?.length > 0 ? (
-            categories.map(({ id, name, postCount }) => (
-              <TableRow key={id}>
-                <TableHead className="w-[100px]  text-center">
-                  {name}{" "}
-                </TableHead>
-                <TableHead className={"text-center"}>{postCount} </TableHead>
-                <TableHead className=" flex justify-center items-center  gap-1.5 outline-2 outline-emerald-600">
-                  {isAdmin ? (
-                    <>
-                      <EditCategoryForm category={{ id: id, name: name }} />
-                      <Button
-                        disabled={isDeleting}
-                        onClick={() => handleDelete(id)}
-                      >
-                        <Trash />
-                      </Button>
-                    </>
-                  ) : (
-                    "-"
-                  )}
-
-                </TableHead>
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={3} className="h-24 text-center">
-                No categories found. Create one to get started!
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      <TableComponent
+        data={categories}
+        headers={["name", "post count", "actions"]}
+        renderRow={renderRow}
+        caption="A list of available categories"
+        noDataContent="No categories found."
+        renderRowProps={{ isAdmin, handleDelete, isDeleting }}
+        colSpanForNoData={3}
+      />
     </>
   );
 };

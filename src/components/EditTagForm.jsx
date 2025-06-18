@@ -7,25 +7,33 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { PenIcon} from "lucide-react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useCreateCategory } from "@/hooks/useCreateCategory";
+import { useUpdateTag } from "@/hooks/useUpdateTag";
 import { toast } from "sonner";
 
-const CreateCategoryForm = () => {
+const EditTagForm = ({tag}) => {
+    const { id, name} =tag
+    console.log(
+"tag in edit", tag
+    )
+    console.info("tag to edit", id)
+    console.info("tag to edit",  name)
   const initialErrorState = {
     name: "",
     general: "",
   };
 
-  const initialFormState = { name: "" };
+  const initialFormState = { name: name || "" };
 
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState(initialErrorState);
-  const { createCategory, isLoading } = useCreateCategory();
+  const  { updateTagFn:updateTag , isLoading} = useUpdateTag();
+
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleChange = (e) => {
@@ -43,8 +51,8 @@ const CreateCategoryForm = () => {
   const handleOpenChange = (open) => {
     setIsDialogOpen(open);
     if (!open) {
-      setFormData(initialFormState); 
-      setErrors(initialErrorState); 
+      setFormData(initialFormState);
+      setErrors(initialErrorState);
     }
   };
 
@@ -66,13 +74,13 @@ const CreateCategoryForm = () => {
       setErrors(newErrors);
       return;
     }
-    createCategory(
-      { categoryName: formData.name.trim() },
+    updateTag(
+      { tagName: formData.name.trim(), tagId: id },
       {
         onSuccess: (data) => {
-          toast.success(`Category '${data.name}' successfully added`);
+          toast.success(`Tag '${data.name}' successfully updated`);
           setIsDialogOpen(false);
-          setFormData(initialFormState);
+          setFormData(prev=> ({...prev, name:data.name}));
           setErrors(initialErrorState);
         },
         onError: (err) => {
@@ -84,7 +92,6 @@ const CreateCategoryForm = () => {
         },
       }
     );
-
     console.log("Form submitted with data:", formData);
   };
 
@@ -92,31 +99,29 @@ const CreateCategoryForm = () => {
     <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          <span>Add Category</span>
+          <PenIcon />
         </Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create New Category</DialogTitle>
+          <DialogTitle>Edit Tag</DialogTitle>
           <DialogDescription>
-            Enter the name for a new category. This will help in organizing the
-            blogs.
+            {`Update the name for "${name}" category.`}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid gap-3">
-              <Label htmlFor="name">Category Name</Label>
+              <Label htmlFor="name">Updated Name</Label>
               <Input
                 name="name"
                 onChange={handleChange}
                 id="name"
                 type="text"
                 value={formData.name}
-                placeholder="e.g., Programming, Math, History"
+                placeholder="e.g., react, css"
                 required
               />
               {errors.name && (
@@ -135,7 +140,7 @@ const CreateCategoryForm = () => {
 
           <div className="flex justify-end">
             <Button type="submit" disabled={isLoading}>
-              Add Category
+              Save Tag
             </Button>
           </div>
         </form>
@@ -144,4 +149,4 @@ const CreateCategoryForm = () => {
   );
 };
 
-export default CreateCategoryForm;
+export default EditTagForm;

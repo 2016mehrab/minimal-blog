@@ -34,6 +34,16 @@ const Header = () => {
           <li>
             <Button variant="ghost" asChild>
               <Link
+                to="/posts"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Add_Post
+              </Link>
+            </Button>
+          </li>
+          <li>
+            <Button variant="ghost" asChild>
+              <Link
                 to="/categories"
                 className="text-muted-foreground hover:text-foreground"
               >

@@ -1,8 +1,9 @@
+import TagComponent from '@/components/TagComponent'
 import React from 'react'
 
 const Tag = () => {
   return (
-    <div>Tag</div>
+    <TagComponent/>
   )
 }
 

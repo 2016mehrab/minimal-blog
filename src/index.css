@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./App.css";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -110,7 +111,6 @@
   --sidebar-ring: oklch(0.527 0.154 150.069);
 }
 
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -118,4 +118,12 @@
   body {
     @apply bg-background text-foreground;
   }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  ol{
+    list-style:decimal;
+  }
+  
 }

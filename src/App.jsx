@@ -12,6 +12,8 @@ import Register from "./Pages/Register";
 import ResetPassword from "./Pages/ResetPassword";
 import ForgotPassword from "./Pages/ForgotPassword";
 import { Toaster } from "./components/ui/sonner";
+import Post from "./Pages/Post";
+import BlogDetails from "./Pages/BlogDetails";
 
 const App = () => {
   const queryClient = new QueryClient({
@@ -37,6 +39,8 @@ const App = () => {
             <Route path="categories" element={<Category />} />
             <Route path="tags" element={<Tag />} />
             <Route path="home" element={<Home />} />
+            <Route path="posts" element={<Post />} />
+            <Route path="posts/:id" element={< BlogDetails />} />
           </Route>
           {/* <Route path="*" element={<PageNotFound />} /> */}
           <Route path="/login" element={<Login />} />

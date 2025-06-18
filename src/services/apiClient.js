@@ -1,7 +1,7 @@
 import constants from "@/lib/constants";
 import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { refreshToken } from "./auth";
+import { logout, refreshToken } from "./auth";
 
 const queryClient = new QueryClient();
 export const apiClient = axios.create({
@@ -38,8 +38,8 @@ apiClient.interceptors.request.use(async (config) => {
   ) {
     if (isRefreshing)
       return (
-        new Promise((res, rej) => {
-          failedQueue.push({ res, rej });
+        new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
         })
           .then((token) => {
             config.headers.Authorization = `Bearer ${token}`;
@@ -88,11 +88,11 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    console.info("error response from res intercept",error.response)
+    console.info("error response from res intercept", error.response);
 
     if (
       error?.response?.status === 401 &&
-    // dont retry if refresh request fails
+      // dont retry if refresh request fails
       !originalRequest._retry &&
       originalRequest.url !== "/auth/refresh-token"
     ) {
@@ -146,6 +146,19 @@ apiClient.interceptors.response.use(
       } finally {
         isRefreshing = false;
       }
+    }
+
+    // some problem with the refresh token
+    if (error?.response?.status === 403) {
+      console.error(
+        "Received 403 Forbidden. Invalidating session and redirecting to login."
+      );
+      await logout();
+      localStorage.removeItem("auth"); 
+      queryClient.invalidateQueries(["user"]);
+      queryClient.clear(); 
+      window.location.href = "/login";
+      return Promise.reject(error); 
     }
 
     return Promise.reject(error);

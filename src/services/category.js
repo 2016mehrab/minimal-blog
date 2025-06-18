@@ -86,7 +86,7 @@ export const updateCategory = async ({ categoryId,categoryName }) => {
     };
 
   } catch (error) {
-    console.error("Failed to create category:", error);
+    console.error("Failed to update category:", error);
     let errorMessage = "An error occurred. Please try again later.";
     let fieldErrors = {};
 

@@ -75,7 +75,7 @@ const EditCategoryForm = ({category}) => {
       return;
     }
     updateCategory(
-      { categoryName: formData.name, categoryId: id },
+      { categoryName: formData.name.trim(), categoryId: id },
       {
         onSuccess: (data) => {
           toast.success(`Category '${data.name}' successfully updated`);
@@ -140,7 +140,7 @@ const EditCategoryForm = ({category}) => {
 
           <div className="flex justify-end">
             <Button type="submit" disabled={isLoading}>
-              Add Category
+              Save Category
             </Button>
           </div>
         </form>
