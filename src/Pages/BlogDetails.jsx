@@ -6,6 +6,15 @@ import React, { useEffect, useRef, useState } from "react"; // Import useState
 import "../App.css";
 import { getSanitizedHTML } from "@/lib/utils";
 import slugify from "slugify";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 
 const BlogDetails = () => {
   const { id } = useParams();
@@ -45,8 +54,6 @@ const BlogDetails = () => {
       });
 
       setTableOfContents(toc); // Update state with TOC
-      console.log("blog from effect^^^");
-      console.log(blog?.content);
     }
   }, [blog]); // Re-run when blog data changes
 
@@ -56,7 +63,16 @@ const BlogDetails = () => {
   if (isLoading) {
     return <div>Blog loading</div>;
   }
+  function formatReadTime(readtime) {
+    if (readtime >= 60) {
+      let hr = Math.floor(readtime / 60);
+      let min = readtime % 60;
 
+      return min > 0 ? `${hr} hr ${min} min` : `${hr} hr`;
+    } else return `${readtime} min`;
+  }
+
+  console.log("BLOG", blog);
   return (
     // <div className="p-4 md:p-16 flex flex-col md:flex-row justify-center gap-8">
     <div className="p-4 grid grid-row-[1fr_2fr_auto] md:grid-cols-[1fr_2fr_1fr] gap-4 justify-center justify-items-center ring-1 ring-blue-500">
@@ -90,12 +106,59 @@ const BlogDetails = () => {
         </aside>
       )}
 
-      {/* Blog Content Section */}
-      <div
-        ref={contentRef}
-        className="tiptap p-4 prose min-w-[400px] md:max-w-3xl  ring-1 ring-lime-700"
-        dangerouslySetInnerHTML={{ __html: getSanitizedHTML(blog.content) }}
-      />
+      <div className="space-y-4">
+        <div>
+          <Card className={" rounded-none"}>
+            <CardHeader>
+              <h1 className="text-3xl font-bold tracking-tight lg:text-4xl">
+                {blog.title}
+              </h1>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="flex flex-col gap-2 text-sm text-muted-foreground">
+                <span>By {blog?.author?.name}</span>
+                <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                  <span>
+                    Published on{" "}
+                    {new Date(blog?.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                  <div className="h-4 w-px bg-muted-foreground/50 mx-1" />
+                  <span>{formatReadTime(blog?.readingTime)} read</span>
+                </div>
+              </CardDescription>
+            </CardContent>
+            <CardFooter className="flex flex-col items-start gap-2 pt-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-foreground">
+                  Category:
+                </span>
+                <Badge variant="secondary" className="text-sm">
+                  {blog?.category.name}
+                </Badge>
+              </div>
+              {blog?.tags?.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {blog.tags.map((t) => (
+                    <Badge key={t.id} variant="outline" className="text-xs">
+                      #{t.name}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </CardFooter>
+          </Card>
+        </div>
+
+        <div
+          ref={contentRef}
+          className="tiptap p-4 prose min-w-[400px] md:max-w-3xl  ring-1 ring-lime-700"
+          dangerouslySetInnerHTML={{ __html: getSanitizedHTML(blog.content) }}
+        />
+      </div>
       <div className="ring-1 ring-gray-500 "></div>
     </div>
   );

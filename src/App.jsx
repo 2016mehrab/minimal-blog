@@ -14,6 +14,8 @@ import ForgotPassword from "./Pages/ForgotPassword";
 import { Toaster } from "./components/ui/sonner";
 import Post from "./Pages/Post";
 import BlogDetails from "./Pages/BlogDetails";
+import Drafts from "./Pages/Drafts";
+import EditPostWrapper from "./components/EditPostWrapper";
 
 const App = () => {
   const queryClient = new QueryClient({
@@ -40,7 +42,10 @@ const App = () => {
             <Route path="tags" element={<Tag />} />
             <Route path="home" element={<Home />} />
             <Route path="posts" element={<Post />} />
+            <Route path="drafts" element={<Drafts />} />
+            <Route path="edit-post/:postId" element={< EditPostWrapper />} />
             <Route path="posts/:id" element={< BlogDetails />} />
+            <Route path="drafts/:id" element={< BlogDetails />} />
           </Route>
           {/* <Route path="*" element={<PageNotFound />} /> */}
           <Route path="/login" element={<Login />} />

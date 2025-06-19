@@ -72,6 +72,16 @@ const Header = () => {
             </Button>
           </li>
           <li>
+            <Button variant="ghost" asChild>
+              <Link
+                to="/drafts"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Drafts
+              </Link>
+            </Button>
+          </li>
+          <li>
             <Button
               variant="outline"
               onClick={logoutUser}

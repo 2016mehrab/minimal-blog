@@ -151,9 +151,15 @@
   }
 
   blockquote {
-    border-left: 3px solid var(--foreground);
-    margin: 1.5rem 0;
-    padding-left: 1rem;
+    background-color: var(--purple-light); /* Light background */
+    border-left: 5px solid var(--purple); /* Stronger left accent */
+    border-radius: 0.5rem; /* Rounded corners */
+    padding: 1.5rem; /* More padding all around */
+    margin: 2rem 0; /* More margin */
+    color: var(--foreground); /* Explicit text color */
+    font-size: 1.05rem; /* Slightly larger text */
+    line-height: 1.6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Very subtle shadow */
   }
 
   hr {

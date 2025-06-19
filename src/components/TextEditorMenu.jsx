@@ -24,6 +24,8 @@ import {
   AlignRightIcon,
   AlignJustifyIcon,
   Link2Icon,
+  QuoteIcon,
+  HighlighterIcon,
 } from "lucide-react";
 import { Button } from "./ui/button";
 
@@ -292,6 +294,32 @@ const TextEditorMenu = ({ editor }) => {
       </Button>
 
       <div className="h-6 w-px bg-border mx-1 md:mx-2" />
+      <Button
+        variant={"outline"}
+        size={"icon"}
+        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+        type="button"
+        className={
+          editor?.isActive("blockquote")
+            ? "bg-accent text-accent-foreground"
+            : ""
+        }
+      >
+        <QuoteIcon className="h-4 w-4" />
+      </Button>
+      <Button
+        variant={"outline"}
+        size={"icon"}
+        onClick={() => editor.chain().focus().toggleHighlight().run()}
+        type="button"
+        className={
+          editor?.isActive("highlight")
+            ? "bg-accent text-accent-foreground"
+            : ""
+        }
+      >
+        <HighlighterIcon className="h-4 w-4" />
+      </Button>
 
       <Button
         variant={"outline"}
