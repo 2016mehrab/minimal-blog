@@ -7,6 +7,7 @@ import { fetchTags } from "@/services/tag";
 import { fetchCategories } from "@/services/category";
 import { useUpdatePost } from "@/hooks/useUpdatePost";
 import { toast } from "sonner";
+import { useDeletePost } from "@/hooks/useDeletePost";
 
 const EditPostWrapper = () => {
   const { postId } = useParams();
@@ -16,6 +17,7 @@ const EditPostWrapper = () => {
     queryKey: ["post", postId],
     enabled: !!postId,
   });
+  const { deleteBlog, isLoading: isDeleting } = useDeletePost();
 
   const { data: availableTags, isLoading: isLoadingTags } = useQuery({
     queryKey: ["tags"],
@@ -51,6 +53,20 @@ const EditPostWrapper = () => {
     });
   }
 
+  function handleDelete() {
+    return new Promise((resolve, reject) => {
+      deleteBlog(postId,{
+        onSuccess: () => {
+          console.log("Blog deleted");
+          resolve();
+        },
+        onError: (err) => {
+          // basically throw
+          reject(err);
+        },
+      })
+    });
+  }
   return (
     <>
       <PostForm
@@ -60,6 +76,8 @@ const EditPostWrapper = () => {
         onSubmit={handleSubmit}
         categories={categories}
         availableTags={availableTags}
+        onDelete={handleDelete}
+        isDeleting={isDeleting}
       />
     </>
   );

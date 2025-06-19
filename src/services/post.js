@@ -132,3 +132,14 @@ export const editPost = async (editData) => {
     };
   }
 };
+
+export const deletePost= async (id) => {
+  try {
+    const URL = constants.POST_URL+"/"+id;
+     await apiClient.delete(URL, null, { withCredentials: true });
+    return true;
+  } catch (error) {
+    console.error("Failed to delete post:", error);
+    throw new Error("Failed to delete post");
+  }
+};

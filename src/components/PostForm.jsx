@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -21,10 +21,12 @@ import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
 import Underline from "@tiptap/extension-underline";
 import TextEditorMenu from "./TextEditorMenu";
-import { X } from "lucide-react";
+import { TrashIcon, X } from "lucide-react";
 import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import Link from "@tiptap/extension-link";
+import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 const PostStatus = {
   DRAFT: "DRAFT",
@@ -32,6 +34,8 @@ const PostStatus = {
 };
 
 const PostForm = ({
+  onDelete,
+  isDeleting,
   initialPost,
   onSubmit,
   onCancel,
@@ -45,6 +49,7 @@ const PostForm = ({
   const [status, setStatus] = useState(initialPost?.status || PostStatus.DRAFT);
   const [errors, setErrors] = useState({});
 
+  const navigate = useNavigate();
   const lowlight = createLowlight(all);
 
   const editor = useEditor({
@@ -79,7 +84,7 @@ const PostForm = ({
         defaultProtocol: "https",
         HTMLAttributes: {
           rel: "noopener noreferrer",
-          target:"_blank"
+          target: "_blank",
         },
       }),
     ],
@@ -124,6 +129,17 @@ const PostForm = ({
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handleDelete = async () => {
+    try {
+      await onDelete();
+      toast.success("Blog deleted");
+      setTimeout(()=>(navigate("/")), 2000);
+      
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -172,9 +188,7 @@ const PostForm = ({
     setSelectedTags((prev) => prev.filter((tag) => tag.id !== tagToRemove.id));
   };
 
-  //   const = (tagToRemove) => {
-  //     setSelectedTags(selectedTags.filter((tag) => tag.id !== tagToRemove.id));
-  //   };
+  
 
   function handleCategorySelect(categoryId) {
     setCategoryId(categoryId);
@@ -287,6 +301,16 @@ const PostForm = ({
           </div>
 
           <div className="flex justify-end gap-2 pt-4  outline-1 outline-amber-700">
+            {initialPost && (
+              <Button
+                variant="destructive"
+                type="button" // Important: type="button" to prevent form submission
+                onClick={handleDelete} // Call onDelete with the post ID
+                disabled={isDeleting}
+              >
+                <TrashIcon className="" /> Delete
+              </Button>
+            )}
             <Button
               variant="outline"
               type="button"

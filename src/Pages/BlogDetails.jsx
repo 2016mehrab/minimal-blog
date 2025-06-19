@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 
 import { getPost } from "@/services/post";
 import { useQuery } from "@tanstack/react-query";
@@ -13,15 +13,20 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PencilIcon, TrashIcon } from "lucide-react";
+import { useDeletePost } from "@/hooks/useDeletePost";
+import { toast } from "sonner";
+import { useUser } from "@/hooks/useUser";
 
 const BlogDetails = () => {
   const { id } = useParams();
   const contentRef = useRef(null);
   const [tableOfContents, setTableOfContents] = useState([]); // State to store TOC items
+  const { deleteBlog, isLoading: isDeleting } = useDeletePost();
+  const { user, isLoading: isLoadingUser } = useUser();
+  const navigate = useNavigate();
 
   const { data: blog, isLoading } = useQuery({
     queryKey: ["post", id],
@@ -62,24 +67,38 @@ const BlogDetails = () => {
   if (id === null || id === undefined) {
     return <div>Post doesn't exist</div>;
   }
-  if (isLoading) {
+  if (isLoading || isLoadingUser) {
     return <div>Blog loading</div>;
   }
+  function isAuthor() {
+    return blog?.author.id === user.userId;
+  }
 
-  console.log("BLOG", blog);
+  function handleDelete() {
+    deleteBlog(id, {
+      onSuccess: () => {
+        toast.success("Blog deleted successfully");
+        navigate("/");
+      },
+      onError: (err) => {
+        toast.error(err.message);
+      },
+    });
+  }
+
   return (
     // <div className="p-4 md:p-16 flex flex-col md:flex-row justify-center gap-8">
     <div className="p-4 grid grid-row-[1fr_2fr_auto] md:grid-cols-[1fr_2fr_1fr] gap-4 justify-center justify-items-center ring-1 ring-blue-500">
       {/* Table of Contents Section */}
-      {tableOfContents.length > 0 && (
-        // <aside className="w-full md:w-64 flex-shrink-0 ring-1 ring-amber-700">
-        <aside className=" w-full  md:w-64 md:justify-self-end ring-1 ring-amber-700">
-          <div className="sticky top-4  border p-2 md:p-4 rounded-md bg-background shadow-sm ring-2 ring-amber-100">
-            {/* <div className="sticky top-4 p-4 border rounded-md bg-background shadow-sm ring-2 ring-amber-100"> */}
-            <h3 className="font-semibold mb-3 text-lg">Table of Contents</h3>
-            <nav>
-              <ul className="space-y-2">
-                {tableOfContents.map((item) => (
+      {/* // <aside className="w-full md:w-64 flex-shrink-0 ring-1 ring-amber-700"> */}
+      <aside className=" w-full  md:w-64 md:justify-self-end ring-1 ring-amber-700">
+        <div className="sticky top-4  border p-2 md:p-4 rounded-md bg-background shadow-sm ring-2 ring-amber-100">
+          {/* <div className="sticky top-4 p-4 border rounded-md bg-background shadow-sm ring-2 ring-amber-100"> */}
+          <h3 className="font-semibold mb-3 text-lg">Table of Contents</h3>
+          <nav>
+            <ul className="space-y-2">
+              {tableOfContents.length > 0 ? (
+                tableOfContents?.map((item) => (
                   <li
                     key={item.id}
                     className={`text-sm ${
@@ -93,12 +112,14 @@ const BlogDetails = () => {
                       {item.text}
                     </a>
                   </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-        </aside>
-      )}
+                ))
+              ) : (
+                <li>No table of contents available</li>
+              )}
+            </ul>
+          </nav>
+        </div>
+      </aside>
 
       <div className="space-y-4">
         <div>
@@ -111,18 +132,23 @@ const BlogDetails = () => {
               <h1 className="text-3xl font-bold tracking-tight lg:text-4xl">
                 {blog.title}
               </h1>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" asChild>
-                  <Link to={`/edit-post/${id}` }>
-                    <PencilIcon className=" h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button variant="destructive" size="sm" asChild>
-                  <Link>
+              {isAuthor() && (
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to={`/edit-post/${id}`}>
+                      <PencilIcon className=" h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    variant="destructive"
+                    size="sm"
+                  >
                     <TrashIcon className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
+                  </Button>
+                </div>
+              )}
             </CardHeader>
             <CardContent>
               <CardDescription className="flex flex-col gap-2 text-sm text-muted-foreground">
