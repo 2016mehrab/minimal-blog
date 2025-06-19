@@ -13,7 +13,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { fetchPosts } from "@/services/post";
 import { Link } from "react-router";
-import { getTruncatedPlainText } from "@/lib/utils";
+import { formatReadTime, getTruncatedPlainText } from "@/lib/utils";
 
 const PublishedPosts = () => {
   // const blogPosts = [
@@ -116,7 +116,7 @@ const PublishedPosts = () => {
                         day: "numeric",
                         year: "numeric",
                       })}{" "}
-                      • {post.readingTime}
+                      • {formatReadTime(post.readingTime) }
                     </p>
                   </CardContent>
                   <CardFooter>

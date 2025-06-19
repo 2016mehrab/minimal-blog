@@ -134,3 +134,17 @@ export function getSanitizedHTML(htmlString) {
 
   return sanitizedHtml;
 }
+
+/**
+ * format reading time
+ * @param {number} readtime - readtime in minutes
+ * @returns {string} formatted reading time in hour min
+ */
+export  function formatReadTime(readtime) {
+    if (readtime >= 60) {
+      let hr = Math.floor(readtime / 60);
+      let min = readtime % 60;
+
+      return min > 0 ? `${hr} hr ${min} min` : `${hr} hr`;
+    } else return `${readtime} min`;
+  }

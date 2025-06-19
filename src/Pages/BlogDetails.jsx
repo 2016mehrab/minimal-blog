@@ -1,10 +1,10 @@
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 
 import { getPost } from "@/services/post";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useRef, useState } from "react"; // Import useState
 import "../App.css";
-import { getSanitizedHTML } from "@/lib/utils";
+import { formatReadTime, getSanitizedHTML } from "@/lib/utils";
 import slugify from "slugify";
 import {
   Card,
@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { PencilIcon, TrashIcon } from "lucide-react";
 
 const BlogDetails = () => {
   const { id } = useParams();
@@ -63,14 +65,6 @@ const BlogDetails = () => {
   if (isLoading) {
     return <div>Blog loading</div>;
   }
-  function formatReadTime(readtime) {
-    if (readtime >= 60) {
-      let hr = Math.floor(readtime / 60);
-      let min = readtime % 60;
-
-      return min > 0 ? `${hr} hr ${min} min` : `${hr} hr`;
-    } else return `${readtime} min`;
-  }
 
   console.log("BLOG", blog);
   return (
@@ -109,10 +103,26 @@ const BlogDetails = () => {
       <div className="space-y-4">
         <div>
           <Card className={" rounded-none"}>
-            <CardHeader>
+            <CardHeader
+              className={
+                "flex flex-row items-center justify-between space-y-0 pb-2"
+              }
+            >
               <h1 className="text-3xl font-bold tracking-tight lg:text-4xl">
                 {blog.title}
               </h1>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" asChild>
+                  <Link to={`/edit-post/${id}` }>
+                    <PencilIcon className=" h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button variant="destructive" size="sm" asChild>
+                  <Link>
+                    <TrashIcon className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <CardDescription className="flex flex-col gap-2 text-sm text-muted-foreground">
