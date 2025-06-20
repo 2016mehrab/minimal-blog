@@ -11,7 +11,11 @@ export const useDeleteCategory= () => {
   } = useMutation({
     mutationFn: (id) => deleteCategoryService(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({
+        predicate:(q)=>{
+          return q.queryKey[0]==="posts" || q.queryKey[0]==="categories"
+        }
+      })
     },
   });
 

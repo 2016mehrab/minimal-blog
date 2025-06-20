@@ -11,7 +11,11 @@ export const useDeletePost= () => {
   } = useMutation({
     mutationFn: deletePost,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({
+        predicate:(q)=>{
+          return q.queryKey[0]==="posts" || q.queryKey[0]==="categories" || q.queryKey[0]==="tags"
+        }
+      })
     },
   });
 

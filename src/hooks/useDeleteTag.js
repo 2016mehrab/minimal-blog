@@ -11,7 +11,12 @@ export const useDeleteTag= () => {
   } = useMutation({
     mutationFn: deleteTagService,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tags"] });
+      queryClient.invalidateQueries({
+        predicate:(query)=>{
+          return query.queryKey[0]!== 'user' && query.queryKey[0]!== 'categories';
+        }
+      })
+      // queryClient.invalidateQueries({ queryKey: ["tags"] });
     },
   });
 

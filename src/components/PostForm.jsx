@@ -31,6 +31,7 @@ import { useNavigate } from "react-router";
 const PostStatus = {
   DRAFT: "DRAFT",
   PUBLISHED: "PUBLISHED",
+  PENDING: "PENDING",
 };
 
 const PostForm = ({
@@ -296,6 +297,7 @@ const PostForm = ({
               <SelectContent>
                 <SelectItem value={PostStatus.DRAFT}>Draft</SelectItem>
                 <SelectItem value={PostStatus.PUBLISHED}>Published</SelectItem>
+                <SelectItem value={PostStatus.PENDING}>Pending</SelectItem>
               </SelectContent>
             </Select>
           </div>

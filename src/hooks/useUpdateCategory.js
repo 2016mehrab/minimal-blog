@@ -14,9 +14,12 @@ export const useUpdateCategory = () => {
       updateCategoryService({ categoryId, categoryName }),
     onSuccess: (data) => {
       console.info("category updated", data);
+
       queryClient.invalidateQueries({
-        queryKey: ["categories"],
-      });
+        predicate:(q)=>{
+          return q.queryKey[0]==="posts" || q.queryKey[0]==="categories"
+        }
+      })
     },
     onError: (err) => {
       console.error("error", err);

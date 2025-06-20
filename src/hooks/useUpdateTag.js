@@ -14,8 +14,10 @@ export const useUpdateTag= () => {
     onSuccess: (data) => {
       console.info("tag name updated", data);
       queryClient.invalidateQueries({
-        queryKey: ["tags"],
-      });
+        predicate:(q)=>{
+          return q.queryKey[0]==="posts" || q.queryKey[0]==="tags"
+        }
+      })
     },
     onError: (err) => {
       console.error("error", err);
