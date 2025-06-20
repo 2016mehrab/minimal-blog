@@ -15,7 +15,7 @@ export const useUpdateTag= () => {
       console.info("tag name updated", data);
       queryClient.invalidateQueries({
         predicate:(q)=>{
-          return q.queryKey[0]==="posts" || q.queryKey[0]==="tags"
+          return q.queryKey[0]==="posts" || q.queryKey[0]==="tags" || q.queryKey[0] ==="post";
         }
       })
     },

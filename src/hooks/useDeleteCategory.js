@@ -13,7 +13,7 @@ export const useDeleteCategory= () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate:(q)=>{
-          return q.queryKey[0]==="posts" || q.queryKey[0]==="categories"
+          return q.queryKey[0]==="posts" || q.queryKey[0]==="categories" || q.queryKey[0] ==="post";
         }
       })
     },

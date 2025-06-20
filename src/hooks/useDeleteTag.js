@@ -12,8 +12,8 @@ export const useDeleteTag= () => {
     mutationFn: deleteTagService,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate:(query)=>{
-          return query.queryKey[0]!== 'user' && query.queryKey[0]!== 'categories';
+        predicate:(q)=>{
+          return q.queryKey[0]==="posts" || q.queryKey[0]==="tags" || q.queryKey[0] ==="post";
         }
       })
       // queryClient.invalidateQueries({ queryKey: ["tags"] });
