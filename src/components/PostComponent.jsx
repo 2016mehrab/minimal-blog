@@ -6,6 +6,8 @@ import { fetchCategories } from "@/services/category";
 import { useAddPost } from "@/hooks/useAddPost";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
+import { useUser } from "@/hooks/useUser";
+import Loader from "./Loader";
 
 const PostComponent = () => {
   const { data: tags, isLoading: isLoadingTags } = useQuery({
@@ -16,11 +18,12 @@ const PostComponent = () => {
     queryKey: ["categories"],
     queryFn: fetchCategories,
   });
+  const {user, isLoading:isLoadingUser} =useUser();
   const navigate = useNavigate();
   const { createPostFn, isLoading: isAdding } = useAddPost();
 
-  if (isLoadingCategories || isLoadingTags) {
-    return <div>Loading</div>;
+  if (isLoadingCategories || isLoadingTags || isLoadingUser) {
+    return <Loader/>
   }
 
   function onSubmit({ title, content, categoryId, tagIds, status }) {
@@ -46,6 +49,7 @@ const PostComponent = () => {
 
   return (
     <PostForm
+      role={[...user.role]}
       onCancel={onCancel}
       isSubmitting={isAdding}
       onSubmit={onSubmit}

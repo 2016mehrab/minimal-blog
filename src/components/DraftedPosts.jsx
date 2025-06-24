@@ -35,7 +35,7 @@ const DraftedPosts = () => {
   }
 
   return (
-    <BlogGrid years={years} blogPosts={blogPosts}/>
+    <BlogGrid years={years} badge= {true } blogPosts={blogPosts}/>
 
   );
 };

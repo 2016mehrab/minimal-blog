@@ -8,10 +8,14 @@ import { fetchCategories } from "@/services/category";
 import { useUpdatePost } from "@/hooks/useUpdatePost";
 import { toast } from "sonner";
 import { useDeletePost } from "@/hooks/useDeletePost";
+import { useUser } from "@/hooks/useUser";
+import { Spinner } from "./ui/shadcn-io/spinner";
+import Loader from "./Loader";
 
 const EditPostWrapper = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
+  const { user, isLoading: isLoadingUser } = useUser();
   const { data: blog, isLoading } = useQuery({
     queryFn: () => getPost({ postId }),
     queryKey: ["post", postId],
@@ -33,8 +37,10 @@ const EditPostWrapper = () => {
   if (postId === null || postId === undefined) {
     return <div>Blog not found.</div>;
   }
-  if (isLoading || isLoadingTags || isLoadingCategories)
-    return <div>Blog is loading.</div>;
+  if (isLoading || isLoadingTags || isLoadingCategories || isLoadingUser)
+    return (
+  <Loader/>
+    );
 
   function handleSubmit(editData) {
     editData["id"] = postId;
@@ -55,7 +61,7 @@ const EditPostWrapper = () => {
 
   function handleDelete() {
     return new Promise((resolve, reject) => {
-      deleteBlog(postId,{
+      deleteBlog(postId, {
         onSuccess: () => {
           console.log("Blog deleted");
           resolve();
@@ -64,12 +70,13 @@ const EditPostWrapper = () => {
           // basically throw
           reject(err);
         },
-      })
+      });
     });
   }
   return (
     <>
       <PostForm
+        role={[...user.role]}
         onCancel={() => navigate(-1)}
         isSubmitting={isUpdating}
         initialPost={blog}

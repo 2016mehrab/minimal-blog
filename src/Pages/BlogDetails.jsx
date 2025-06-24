@@ -70,8 +70,8 @@ const BlogDetails = () => {
   if (isLoading || isLoadingUser) {
     return <div>Blog loading</div>;
   }
-  function isAuthor() {
-    return blog?.author.id === user.userId;
+  function hasPermission() {
+    return blog?.author.id === user.userId || user?.role?.includes("ROLE_ADMIN") || user?.role?.includes("ROLE_EDITOR");
   }
 
   function handleDelete() {
@@ -132,7 +132,7 @@ const BlogDetails = () => {
               <h1 className="text-3xl font-bold tracking-tight lg:text-4xl">
                 {blog.title}
               </h1>
-              {isAuthor() && (
+              {hasPermission() && (
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" asChild>
                     <Link to={`/edit-post/${id}`}>

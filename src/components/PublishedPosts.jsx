@@ -11,7 +11,7 @@ const PublishedPosts = () => {
   if (isLoading) return <div>Loading posts.</div>;
   const years = [
     ...new Set(
-      blogPosts.map((post) =>
+      blogPosts?.map((post) =>
         new Date(post.createdAt)
           .toLocaleDateString("en-US", {
             year: "numeric",
