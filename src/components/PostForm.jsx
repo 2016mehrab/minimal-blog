@@ -28,7 +28,7 @@ import Link from "@tiptap/extension-link";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 
-const PostStatus = {
+let PostStatus = {
   DRAFT: "DRAFT",
   PUBLISHED: "PUBLISHED",
   PENDING: "PENDING",
@@ -42,6 +42,7 @@ const PostForm = ({
   onCancel,
   categories,
   availableTags,
+  role,
   isSubmitting = false,
 }) => {
   const [title, setTitle] = useState(initialPost?.title || "");
@@ -101,7 +102,9 @@ const PostForm = ({
       setErrors((prev) => ({ ...prev, content: "" }));
     },
   });
+
   const [currentSelectTagValue, setCurrentSelectTagValue] = useState("");
+  console.log("role from PostForm", role)
 
   useEffect(() => {
     console.info("Use effect in effect");
@@ -136,8 +139,7 @@ const PostForm = ({
     try {
       await onDelete();
       toast.success("Blog deleted");
-      setTimeout(()=>(navigate("/")), 2000);
-      
+      setTimeout(() => navigate("/"), 2000);
     } catch (error) {
       toast.error(error.message);
     }
@@ -160,7 +162,9 @@ const PostForm = ({
     console.log("submitted post", postData);
 
     try {
-      await onSubmit(postData); // Await onSubmit to catch errors
+      await onSubmit(postData); 
+      navigate("/home");
+
     } catch (error) {
       console.error("Submission error:", error);
       if (error?.error) {
@@ -189,8 +193,6 @@ const PostForm = ({
     setSelectedTags((prev) => prev.filter((tag) => tag.id !== tagToRemove.id));
   };
 
-  
-
   function handleCategorySelect(categoryId) {
     setCategoryId(categoryId);
     setErrors((prev) => ({ ...prev, category: "" }));
@@ -204,6 +206,8 @@ const PostForm = ({
   const suggestedTags = (availableTags || []).filter(
     (tag) => !selectedTags.some((t) => t.id === tag.id)
   );
+
+  const isEditorOrAdmin = role?.includes("ROLE_ADMIN") || role?.includes("ROLE_EDITOR");
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -296,8 +300,15 @@ const PostForm = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={PostStatus.DRAFT}>Draft</SelectItem>
-                <SelectItem value={PostStatus.PUBLISHED}>Published</SelectItem>
-                <SelectItem value={PostStatus.PENDING}>Pending</SelectItem>
+                {/* {isEditorOrAdmin && (
+                  <SelectItem value={PostStatus.PUBLISHED}>
+                    Published
+                  </SelectItem>
+                )} */}
+                <SelectItem value={PostStatus.PENDING}>
+                  {/* {!isEditorOrAdmin ? `Request Publication` : `Pending`} */}
+                  Request Publication
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -306,8 +317,8 @@ const PostForm = ({
             {initialPost && (
               <Button
                 variant="destructive"
-                type="button" // Important: type="button" to prevent form submission
-                onClick={handleDelete} // Call onDelete with the post ID
+                type="button"
+                onClick={handleDelete}
                 disabled={isDeleting}
               >
                 <TrashIcon className="" /> Delete

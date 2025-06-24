@@ -86,10 +86,81 @@ export const fetchDrafts = async () => {
   }
 };
 
+export const fetchPending = async ({
+  categoryId,
+  tagId,
+  page = 0,
+  size = constants.PAGE_SIZE,
+  sort = ["createdAt", "desc"],
+}) => {
+  try {
+    const URL = constants.POST_URL + "/pending";
+    const urlSearchParams = new URLSearchParams();
+
+    if (categoryId) {
+      urlSearchParams.append("categoryId", categoryId);
+    }
+    if (tagId) {
+      urlSearchParams.append("tagId", tagId);
+    }
+    urlSearchParams.append("page", page.toString());
+    urlSearchParams.append("size", size.toString());
+
+    // Handle the sort array
+    sort.forEach((s) => urlSearchParams.append("sort", s));
+
+    const fullURL = `${URL}?${urlSearchParams.toString()}`;
+    const response = await apiClient.get(fullURL, { withCredentials: true });
+    console.log("fetch pending posts", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch pending posts:", error);
+    // You might want to throw a custom error or handle it more gracefully
+    throw new Error("Failed to fetch pending posts");
+  }
+};
+
+
+export const fetchUserPending = async ({
+  categoryId,
+  tagId,
+  page = 0,
+  size = constants.PAGE_SIZE,
+  sort = ["createdAt", "desc"],
+}) => {
+  try {
+    const URL = constants.POST_URL + "/user-pending";
+
+    const urlSearchParams = new URLSearchParams();
+
+    if (categoryId) {
+      urlSearchParams.append("categoryId", categoryId);
+    }
+    if (tagId) {
+      urlSearchParams.append("tagId", tagId);
+    }
+    urlSearchParams.append("page", page.toString());
+    urlSearchParams.append("size", size.toString());
+
+    // Handle the sort array
+    sort.forEach((s) => urlSearchParams.append("sort", s));
+    const fullURL = `${URL}?${urlSearchParams.toString()}`;
+
+    const response = await apiClient.get(fullURL, { withCredentials: true });
+    console.log("fetched user pending posts", response.data);
+    
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch user pending posts:", error);
+    // You might want to throw a custom error or handle it more gracefully
+    throw new Error("Failed to fetch user pending posts");
+  }
+};
+
 export const editPost = async (editData) => {
   try {
     const { id, title, content, categoryId, tagIds, status } = editData;
-    console.log("id from service", id)
+    console.log("id from service", id);
     const URL = constants.POST_URL + `/${id}`;
 
     const response = await apiClient.put(
@@ -106,7 +177,6 @@ export const editPost = async (editData) => {
     );
     console.log("fetch draft", response.data);
     return response.data;
-
   } catch (error) {
     console.error("Failed to edit post:", error);
     let errorMessage = "An error occurred. Please try again later.";
@@ -133,13 +203,36 @@ export const editPost = async (editData) => {
   }
 };
 
-export const deletePost= async (id) => {
+export const deletePost = async (id) => {
   try {
-    const URL = constants.POST_URL+"/"+id;
-     await apiClient.delete(URL, null, { withCredentials: true });
+    const URL = constants.POST_URL + "/" + id;
+    await apiClient.delete(URL, null, { withCredentials: true });
     return true;
   } catch (error) {
     console.error("Failed to delete post:", error);
     throw new Error("Failed to delete post");
+  }
+};
+
+export const approvePost = async (id) => {
+  try {
+    const URL = constants.POST_URL + "/" + id + "/approve";
+    console.log("url",URL);
+    await apiClient.put(URL, null, { withCredentials: true });
+    return true;
+  } catch (error) {
+    console.error("Failed to approve post:", error);
+    throw new Error("Failed to approve post");
+  }
+};
+
+export const rejectPost = async (id) => {
+  try {
+    const URL = constants.POST_URL + "/" + id + "/reject";
+    await apiClient.put(URL, null, { withCredentials: true });
+    return true;
+  } catch (error) {
+    console.error("Failed to reject post:", error);
+    throw new Error("Failed to reject post");
   }
 };

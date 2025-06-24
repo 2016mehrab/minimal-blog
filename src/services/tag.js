@@ -109,6 +109,6 @@ export const deleteTag= async (id) => {
     return true;
   } catch (error) {
     console.error("Failed to delete tag:", error);
-    throw new Error("Failed to delete tag");
+    throw new Error(error.response.data.message || "Failed to delete tag");
   }
 };

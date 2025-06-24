@@ -16,6 +16,8 @@ import Post from "./Pages/Post";
 import BlogDetails from "./Pages/BlogDetails";
 import Drafts from "./Pages/Drafts";
 import EditPostWrapper from "./components/EditPostWrapper";
+import PendingPosts from "./Pages/PendingPosts";
+import MyPendingBlogs from "./Pages/MyPendingBlogs";
 
 const App = () => {
   const queryClient = new QueryClient({
@@ -34,7 +36,7 @@ const App = () => {
             element={
                 <ProtectedRoutes>
               <AppLayout />
-              // </ProtectedRoutes>
+               </ProtectedRoutes>
             }
           >
             <Route index element={<Navigate replace to="home" />} />
@@ -45,6 +47,8 @@ const App = () => {
             <Route path="drafts" element={<Drafts />} />
             <Route path="edit-post/:postId" element={< EditPostWrapper />} />
             <Route path="posts/:id" element={< BlogDetails />} />
+            <Route path="posts/pending" element={< PendingPosts/>} />
+            <Route path="posts/user-pending" element={< MyPendingBlogs/>} />
             <Route path="drafts/:id" element={< BlogDetails />} />
           </Route>
           {/* <Route path="*" element={<PageNotFound />} /> */}
