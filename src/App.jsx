@@ -18,6 +18,7 @@ import Drafts from "./Pages/Drafts";
 import EditPostWrapper from "./components/EditPostWrapper";
 import PendingPosts from "./Pages/PendingPosts";
 import MyPendingBlogs from "./Pages/MyPendingBlogs";
+import EditorRegistration from "./Pages/EditorRegistration";
 
 const App = () => {
   const queryClient = new QueryClient({
@@ -34,9 +35,9 @@ const App = () => {
         <Routes>
           <Route
             element={
-                <ProtectedRoutes>
-              <AppLayout />
-               </ProtectedRoutes>
+              <ProtectedRoutes>
+                <AppLayout />
+              </ProtectedRoutes>
             }
           >
             <Route index element={<Navigate replace to="home" />} />
@@ -45,11 +46,12 @@ const App = () => {
             <Route path="home" element={<Home />} />
             <Route path="posts" element={<Post />} />
             <Route path="drafts" element={<Drafts />} />
-            <Route path="edit-post/:postId" element={< EditPostWrapper />} />
-            <Route path="posts/:id" element={< BlogDetails />} />
-            <Route path="posts/pending" element={< PendingPosts/>} />
-            <Route path="posts/user-pending" element={< MyPendingBlogs/>} />
-            <Route path="drafts/:id" element={< BlogDetails />} />
+            <Route path="edit-post/:postId" element={<EditPostWrapper />} />
+            <Route path="posts/:id" element={<BlogDetails />} />
+            <Route path="posts/pending" element={<PendingPosts />} />
+            <Route path="posts/user-pending" element={<MyPendingBlogs />} />
+            <Route path="drafts/:id" element={<BlogDetails />} />
+            <Route path="/register-editor" element={<EditorRegistration/>} />
           </Route>
           {/* <Route path="*" element={<PageNotFound />} /> */}
           <Route path="/login" element={<Login />} />
@@ -57,7 +59,7 @@ const App = () => {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
-        <Toaster/>
+        <Toaster />
       </BrowserRouter>
     </QueryClientProvider>
   );

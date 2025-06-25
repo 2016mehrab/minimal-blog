@@ -13,8 +13,7 @@ import {
 import { Link } from "react-router";
 import { formatReadTime, getTruncatedPlainText } from "@/lib/utils";
 import { Badge } from "./ui/badge";
-import { CheckCircle2Icon, CircleSlash2Icon } from "lucide-react";
-import { useBlogStatus } from "@/hooks/useBlogStatus";
+import BlogGridCardActions from "./BlogGridCardActions";
 
 function getStatusBadge(status) {
   switch (status) {
@@ -33,8 +32,6 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
   console.log("fetched posts", blogPosts);
 
   const hasAuthority = authority;
-  const { mutate: approve, isPending: isApproving } = useBlogStatus("approve");
-  const { mutate: reject, isPending: isRejecting } = useBlogStatus("reject");
 
   return (
     // <div className="flex p-4 gap-4 outline-4 outline-amber-200">
@@ -113,37 +110,7 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
                           ))}
                         </div>
                         {hasAuthority &&  (
-                          <div className="flex w-full md:w-auto justify-end outline-2 outline-pink-300 gap-2 md:gap-4">
-                            <Button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                approve(post.id);
-                              }}
-                              type="button"
-                              disabled={isApproving}
-                              variant="outline"
-                              size="sm"
-                            >
-                              {/* publication */}
-                              {isApproving? 'Approving': <CheckCircle2Icon className=" h-4 w-4" />}
-                              
-                            </Button>
-                            <Button
-                              type="button"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                reject(post.id);
-                              }}
-                              disabled={isRejecting}
-                              variant="destructive"
-                              size="sm"
-                            >
-                              {/* reject publication */}
-                              {isRejecting ? 'Rejecting':<CircleSlash2Icon className="h-4 w-4" />}
-                              
-
-                            </Button>
-                          </div>
+                          <BlogGridCardActions postId={post.id} />
                         )}
                       </div>
                     </CardFooter>
