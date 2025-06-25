@@ -33,8 +33,8 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
   console.log("fetched posts", blogPosts);
 
   const hasAuthority = authority;
-  const { mutate: approve, isLoading: isApproving } = useBlogStatus("approve");
-  const { mutate: reject, isLoading: isRejecting } = useBlogStatus("reject");
+  const { mutate: approve, isPending: isApproving } = useBlogStatus("approve");
+  const { mutate: reject, isPending: isRejecting } = useBlogStatus("reject");
 
   return (
     // <div className="flex p-4 gap-4 outline-4 outline-amber-200">
@@ -112,7 +112,7 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
                             </span>
                           ))}
                         </div>
-                        {hasAuthority && (
+                        {hasAuthority &&  (
                           <div className="flex w-full md:w-auto justify-end outline-2 outline-pink-300 gap-2 md:gap-4">
                             <Button
                               onClick={(e) => {
@@ -125,7 +125,8 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
                               size="sm"
                             >
                               {/* publication */}
-                              <CheckCircle2Icon className=" h-4 w-4" />
+                              {isApproving? 'Approving': <CheckCircle2Icon className=" h-4 w-4" />}
+                              
                             </Button>
                             <Button
                               type="button"
@@ -138,7 +139,9 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
                               size="sm"
                             >
                               {/* reject publication */}
-                              <CircleSlash2Icon className="h-4 w-4" />
+                              {isRejecting ? 'Rejecting':<CircleSlash2Icon className="h-4 w-4" />}
+                              
+
                             </Button>
                           </div>
                         )}
