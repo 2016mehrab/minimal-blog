@@ -1,6 +1,7 @@
 import axios from "axios";
 import constants from "@/lib/constants";
 import { jwtDecode } from "jwt-decode";
+import { apiClient } from "./apiClient";
 
 export const login = async ({ email, password }) => {
   try {
@@ -160,6 +161,54 @@ export const refreshToken = async () => {
       success: false,
       error: {
         message: error.message,
+      },
+    };
+  }
+};
+
+export const registerEditor = async ({ name, email, password }) => {
+  try {
+    const URL = constants.AUTH_URL+"/register-editor";
+    console.table({name ,email, password})
+    console.log("URL",URL);
+    const response = await apiClient.post(
+      URL,
+      {
+        name,
+        email,
+        password,
+      },
+      { withCredentials: true }
+    );
+
+    const { accessToken, expiresIn } = response.data;
+
+    const user = getFormattedToken(accessToken, expiresIn);
+
+    return user;
+
+  } catch (error) {
+    console.error("Registration failed:", error);
+
+    let errorMessage = "An error occurred. Please try again later.";
+    let fieldErrors = {};
+
+    if (error.response) {
+      if (error.response.status === 400 && error.response.data.errors) {
+        errorMessage = error.response.data.message;
+        error.response.data.errors.forEach((err) => {
+          fieldErrors[err.field] = err.message;
+        });
+      } else {
+        errorMessage = error.response.data?.message || errorMessage;
+      }
+    }
+
+    throw {
+      success: false,
+      error: {
+        message: errorMessage,
+        fieldErrors,
       },
     };
   }

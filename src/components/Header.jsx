@@ -27,6 +27,7 @@ const Header = () => {
   }
 
   if (isLoadingUser) return <Loader />;
+  const isAdmin = user.role.includes("ROLE_ADMIN") || false;
   const hasPermission =
     user.role.includes("ROLE_ADMIN") ||
     user.role.includes("ROLE_EDITOR") ||
@@ -108,6 +109,18 @@ const Header = () => {
                     className="w-full text-muted-foreground hover:text-foreground"
                   >
                     Pending
+                  </Link>
+                </Button>
+              </DropdownMenuItem>
+            )}
+            {isAdmin && (
+              <DropdownMenuItem>
+                <Button variant="ghost" asChild>
+                  <Link
+                    to="/register-editor"
+                    className="w-full text-muted-foreground hover:text-foreground"
+                  >
+                    Register Editor
                   </Link>
                 </Button>
               </DropdownMenuItem>
