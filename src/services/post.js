@@ -98,29 +98,32 @@ export const fetchDrafts = async ({ queryKey }) => {
 };
 
 export const fetchPending = async ({
-  categoryId,
-  tagId,
-  page = 0,
-  size = constants.PAGE_SIZE,
-  sort = ["createdAt", "desc"],
+  queryKey,
+  // categoryId,
+  // tagId,
+  // page = 0,
+  // size = constants.PAGE_SIZE,
+  // sort = ["createdAt", "desc"],
 }) => {
   try {
+    const [_key, _status, page] = queryKey;
     const URL = constants.POST_URL + "/pending";
     const urlSearchParams = new URLSearchParams();
 
-    if (categoryId) {
-      urlSearchParams.append("categoryId", categoryId);
-    }
-    if (tagId) {
-      urlSearchParams.append("tagId", tagId);
-    }
-    urlSearchParams.append("page", page.toString());
-    urlSearchParams.append("size", size.toString());
+    // if (categoryId) {
+    //   urlSearchParams.append("categoryId", categoryId);
+    // }
+    // if (tagId) {
+    //   urlSearchParams.append("tagId", tagId);
+    // }
+    urlSearchParams.append("page", page - 1);
+    // urlSearchParams.append("size", size.toString());
 
-    // Handle the sort array
-    sort.forEach((s) => urlSearchParams.append("sort", s));
+    // // Handle the sort array
+    // sort.forEach((s) => urlSearchParams.append("sort", s));
 
     const fullURL = `${URL}?${urlSearchParams.toString()}`;
+
     const response = await apiClient.get(fullURL, { withCredentials: true });
     console.log("fetch pending posts", response.data);
     return response.data;
