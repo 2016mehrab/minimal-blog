@@ -76,12 +76,12 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
                   <div className="space-y-3">
                     <CardHeader>
                       <div className="flex flex-wrap items-center gap-2">
-                        <CardTitle className="text-xl">{post.title}</CardTitle>
+                        <CardTitle className="text-xl truncate">{post.title}</CardTitle>
                         {badge && (
                           <Badge variant={status.variant}>{status.text}</Badge>
                         )}
                       </div>
-                      <CardDescription className="text-muted-foreground">
+                      <CardDescription className="text-muted-foreground break-words overflow-hidden">
                         {getTruncatedPlainText(post.content, 200)}
                         {/* {post.content} */}
                       </CardDescription>

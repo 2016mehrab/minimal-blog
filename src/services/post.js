@@ -1,11 +1,17 @@
 import constants from "@/lib/constants";
 import { apiClient } from "./apiClient";
 
-export const fetchPosts = async () => {
+export const fetchPosts = async ({queryKey}) => {
   try {
-    const URL = constants.POST_URL;
+    const [_key, _,page] =queryKey;
+    const params = new URLSearchParams();
+    console.log("page",page)
+    console.log("queryKey",queryKey)
+    params.append("page", page-1);
+    const URL = constants.POST_URL+`?${params.toString()}`;
     const response = await apiClient.get(URL, null, { withCredentials: true });
 
+    console.log("fetched published", response.data)
     return response.data;
   } catch (error) {
     console.error("Failed to fetch posts:", error);
