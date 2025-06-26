@@ -6,7 +6,7 @@ import BlogGrid from "./BlogGrid";
 import { useUser } from "@/hooks/useUser";
 
 const PendingPostComponent = () => {
-  const{ user, isLoading:isLoadingUser} =useUser();
+  const { user, isLoading: isLoadingUser } = useUser();
   const { data, isLoading } = useQuery({
     queryKey: ["posts", "pending"],
     queryFn: fetchPending,
@@ -20,7 +20,10 @@ const PendingPostComponent = () => {
     );
   }
 
-  const authority= user.role.includes("ROLE_ADMIN") || user.role.includes("ROLE_EDITOR") || false;
+  const authority =
+    user.role.includes("ROLE_ADMIN") ||
+    user.role.includes("ROLE_EDITOR") ||
+    false;
   const blogPosts = data.content;
   const years = [
     ...new Set(
@@ -37,7 +40,17 @@ const PendingPostComponent = () => {
   ]
     .sort()
     .reverse();
-  return <BlogGrid blogPosts={blogPosts} years={years} badge={true} authority={authority} />
+  return (
+    <>
+      <BlogGrid
+        blogPosts={blogPosts}
+        years={years}
+        badge={true}
+        authority={authority}
+      />
+
+    </>
+  );
 };
 
 export default PendingPostComponent;
