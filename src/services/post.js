@@ -89,9 +89,17 @@ export const createPost = async ({
 
 export const fetchDrafts = async ({ queryKey }) => {
   try {
-    const [_key, _, page] = queryKey;
+    const [_key, _, page, sort, categoryId, tagId] = queryKey;
     const params = new URLSearchParams();
     params.append("page", page - 1);
+    if (categoryId) {
+      params.append("categoryId", categoryId);
+    }
+    if (tagId) {
+      params.append("tagId", tagId);
+    }
+
+    sort.split(",").forEach((s) => params.append("sort", s));
 
     const URL = constants.POST_URL + "/drafts?" + params.toString();
 
@@ -104,30 +112,22 @@ export const fetchDrafts = async ({ queryKey }) => {
   }
 };
 
-export const fetchPending = async ({
-  queryKey,
-  // categoryId,
-  // tagId,
-  // page = 0,
-  // size = constants.PAGE_SIZE,
-  // sort = ["createdAt", "desc"],
-}) => {
+export const fetchPending = async ({ queryKey }) => {
   try {
-    const [_key, _status, page] = queryKey;
+    const [_key, _status, page, sort, categoryId, tagId] = queryKey;
     const URL = constants.POST_URL + "/pending";
     const urlSearchParams = new URLSearchParams();
 
-    // if (categoryId) {
-    //   urlSearchParams.append("categoryId", categoryId);
-    // }
-    // if (tagId) {
-    //   urlSearchParams.append("tagId", tagId);
-    // }
+    if (categoryId) {
+      urlSearchParams.append("categoryId", categoryId);
+    }
+    if (tagId) {
+      urlSearchParams.append("tagId", tagId);
+    }
     urlSearchParams.append("page", page - 1);
     // urlSearchParams.append("size", size.toString());
 
-    // // Handle the sort array
-    // sort.forEach((s) => urlSearchParams.append("sort", s));
+    sort.split(",").forEach((s) => urlSearchParams.append("sort", s));
 
     const fullURL = `${URL}?${urlSearchParams.toString()}`;
 
@@ -136,37 +136,28 @@ export const fetchPending = async ({
     return response.data;
   } catch (error) {
     console.error("Failed to fetch pending posts:", error);
-    // You might want to throw a custom error or handle it more gracefully
     throw new Error("Failed to fetch pending posts");
   }
 };
 
-export const fetchUserPending = async ({
-  queryKey,
-  // categoryId,
-  // tagId,
-  // page = 0,
-  // size = constants.PAGE_SIZE,
-  // sort = ["createdAt", "desc"],
-}) => {
+export const fetchUserPending = async ({ queryKey }) => {
   try {
-    const [_key, _status_, page] = queryKey;
+    const [_key, _status, page, sort, categoryId, tagId] = queryKey;
 
     const URL = constants.POST_URL + "/user-pending";
 
     const urlSearchParams = new URLSearchParams();
 
-    // if (categoryId) {
-    //   urlSearchParams.append("categoryId", categoryId);
-    // }
-    // if (tagId) {
-    //   urlSearchParams.append("tagId", tagId);
-    // }
+    if (categoryId) {
+      urlSearchParams.append("categoryId", categoryId);
+    }
+    if (tagId) {
+      urlSearchParams.append("tagId", tagId);
+    }
     urlSearchParams.append("page", page - 1);
     // urlSearchParams.append("size", size.toString());
 
-    // Handle the sort array
-    // sort.forEach((s) => urlSearchParams.append("sort", s));
+    sort.split(",") .forEach((s) => urlSearchParams.append("sort", s));
     const fullURL = `${URL}?${urlSearchParams.toString()}`;
 
     const response = await apiClient.get(fullURL, { withCredentials: true });
@@ -175,7 +166,6 @@ export const fetchUserPending = async ({
     return response.data;
   } catch (error) {
     console.error("Failed to fetch user pending posts:", error);
-    // You might want to throw a custom error or handle it more gracefully
     throw new Error("Failed to fetch user pending posts");
   }
 };
