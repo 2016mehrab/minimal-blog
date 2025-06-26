@@ -1,17 +1,17 @@
 import constants from "@/lib/constants";
 import { apiClient } from "./apiClient";
 
-export const fetchPosts = async ({queryKey}) => {
+export const fetchPosts = async ({ queryKey }) => {
   try {
-    const [_key, _,page] =queryKey;
+    const [_key, _, page] = queryKey;
     const params = new URLSearchParams();
-    console.log("page",page)
-    console.log("queryKey",queryKey)
-    params.append("page", page-1);
-    const URL = constants.POST_URL+`?${params.toString()}`;
+    console.log("page", page);
+    console.log("queryKey", queryKey);
+    params.append("page", page - 1);
+    const URL = constants.POST_URL + `?${params.toString()}`;
     const response = await apiClient.get(URL, null, { withCredentials: true });
 
-    console.log("fetched published", response.data)
+    console.log("fetched published", response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch posts:", error);
@@ -80,9 +80,14 @@ export const createPost = async ({
   }
 };
 
-export const fetchDrafts = async () => {
+export const fetchDrafts = async ({ queryKey }) => {
   try {
-    const URL = constants.POST_URL + "/drafts";
+    const [_key, _, page] = queryKey;
+    const params = new URLSearchParams();
+    params.append("page", page - 1);
+
+    const URL = constants.POST_URL + "/drafts?" + params.toString();
+
     const response = await apiClient.get(URL, null, { withCredentials: true });
     console.log("fetch draft", response.data);
     return response.data;
@@ -126,7 +131,6 @@ export const fetchPending = async ({
   }
 };
 
-
 export const fetchUserPending = async ({
   categoryId,
   tagId,
@@ -154,7 +158,7 @@ export const fetchUserPending = async ({
 
     const response = await apiClient.get(fullURL, { withCredentials: true });
     console.log("fetched user pending posts", response.data);
-    
+
     return response.data;
   } catch (error) {
     console.error("Failed to fetch user pending posts:", error);
@@ -223,7 +227,7 @@ export const deletePost = async (id) => {
 export const approvePost = async (id) => {
   try {
     const URL = constants.POST_URL + "/" + id + "/approve";
-    console.log("url",URL);
+    console.log("url", URL);
     await apiClient.put(URL, null, { withCredentials: true });
     return true;
   } catch (error) {
