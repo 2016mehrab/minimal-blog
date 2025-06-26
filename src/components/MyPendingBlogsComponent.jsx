@@ -1,26 +1,41 @@
-import React from 'react'
-import Loader from './Loader';
-import { fetchUserPending } from '@/services/post';
-import { useUser } from '@/hooks/useUser';
-import { useQuery } from '@tanstack/react-query';
-import BlogGrid from './BlogGrid';
+import React from "react";
+import Loader from "./Loader";
+import { fetchUserPending } from "@/services/post";
+import { useUser } from "@/hooks/useUser";
+import { useQuery } from "@tanstack/react-query";
+import BlogGrid from "./BlogGrid";
+import { useSearchParams } from "react-router";
+import PaginationComponent from "./PaginationComponent";
 
 const MyPendingBlogsComponent = () => {
-  const{ user, isLoading:isLoadingUser} =useUser();
+  const { user, isLoading: isLoadingUser } = useUser();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const currPage = searchParams.get("page")
+    ? Number(searchParams.get("page"))
+    : 1;
+
   const { data, isLoading } = useQuery({
-    queryKey: ["posts", "pending",`${user.userId}`],
+    queryKey: ["posts", "pending", currPage, `${user.userId}`],
     queryFn: fetchUserPending,
   });
 
   if (isLoading || isLoadingUser) {
-    return (
-        <Loader/>
-    );
+    return <Loader />;
   }
 
-  const authority= user.role.includes("ROLE_ADMIN") || user.role.includes("ROLE_EDITOR") || false;
-  const blogPosts = data.content;
+  const authority =
+    user.role.includes("ROLE_ADMIN") ||
+    user.role.includes("ROLE_EDITOR") ||
+    false;
 
+  const blogPosts = data?.content || [];
+  const totalPages = data?.totalPages || 0;
+
+  if (blogPosts.length === 0) {
+    <div>Nothing to show.</div>;
+  }
   const years = [
     ...new Set(
       blogPosts.map((post) =>
@@ -37,8 +52,29 @@ const MyPendingBlogsComponent = () => {
     .sort()
     .reverse();
 
-  return <BlogGrid blogPosts={blogPosts} years={years} badge={true} authority={authority} />
+  function handlePageChange(newPage) {
+    if (newPage >= 1 && newPage <= totalPages) {
+      searchParams.set("page", newPage);
+      setSearchParams(searchParams);
+    }
+  }
 
-}
+  return (
+    <div>
+      <BlogGrid
+        blogPosts={blogPosts}
+        years={years}
+        badge={true}
+        authority={authority}
+      />
 
-export default MyPendingBlogsComponent
+      <PaginationComponent
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        currPage={currPage}
+      />
+    </div>
+  );
+};
+
+export default MyPendingBlogsComponent;
