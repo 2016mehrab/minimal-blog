@@ -14,6 +14,7 @@ import Loader from "./Loader";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { BadgeCheckIcon, LogInIcon, MenuIcon } from "lucide-react";
 import { Badge } from "./ui/badge";
+import ThemeToggleButton from "./ThemeToggleButton";
 
 const Header = () => {
   const { logoutUser, isLoggingOut } = useLogout();
@@ -83,10 +84,7 @@ const Header = () => {
                       Register Editor
                     </NavLink>
                   )}
-                  <NavLink
-                    to="/posts/user-pending"
-                    className={getNavLinkClasses}
-                  >
+                  <NavLink to="/posts/my-pending" className={getNavLinkClasses}>
                     My Pending
                   </NavLink>
                   <hr className="my-2" />
@@ -107,6 +105,9 @@ const Header = () => {
                   </NavLink>
                 </>
               )}
+              <div className="mt-4 flex justify-center">
+                <ThemeToggleButton />
+              </div>
             </nav>
           </SheetContent>
         </Sheet>
@@ -141,6 +142,7 @@ const Header = () => {
       </nav>
 
       <nav className=" hidden  md:flex items-center">
+        <ThemeToggleButton/>
         {isAuthenticated ? (
           <DropdownMenu>
             {user ? (
@@ -193,7 +195,7 @@ const Header = () => {
               <DropdownMenuItem>
                 <Button variant="ghost" asChild>
                   <Link
-                    to="/posts/user-pending"
+                    to="/posts/my-pending"
                     className="w-full text-muted-foreground hover:text-foreground"
                   >
                     My Pending

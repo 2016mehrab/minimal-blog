@@ -49,7 +49,7 @@ const App = () => {
             <Route path="drafts" element={<Drafts />} />
             <Route path="edit-post/:postId" element={<EditPostWrapper />} />
             <Route path="posts/pending" element={<PendingPosts />} />
-            <Route path="posts/user-pending" element={<MyPendingBlogs />} />
+            <Route path="posts/my-pending" element={<MyPendingBlogs />} />
             <Route path="drafts/:id" element={<BlogDetails />} />
             <Route path="/register-editor" element={<EditorRegistration />} />
           </Route>
