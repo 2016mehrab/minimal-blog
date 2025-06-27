@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
+import { Link, NavLink } from "react-router";
 import { apiClient } from "@/services/apiClient";
 import { useLogout } from "@/hooks/useLogout";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -12,6 +12,9 @@ import {
 } from "./ui/dropdown-menu";
 import { useUser } from "@/hooks/useUser";
 import Loader from "./Loader";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { BadgeCheckIcon, MenuIcon } from "lucide-react";
+import { Badge } from "./ui/badge";
 
 const Header = () => {
   const { logoutUser, isLoggingOut } = useLogout();
@@ -33,56 +36,126 @@ const Header = () => {
     user.role.includes("ROLE_EDITOR") ||
     false;
 
+  const getNavLinkClasses = ({ isActive }) =>
+    isActive
+      ? "text-sm font-medium transition-colors text-primary hover:text-muted-foreground"
+      : "text-sm font-medium transition-colors text-muted-foreground hover:text-primary";
+
   return (
-    <header className="grid grid-cols-[1fr_2fr_1fr] p-4 justify-items-center bg-muted w-full outline-1 outline-amber-950">
+    <header className="sticky top-0 z-50  border-b  backdrop-blur supports-[backdrop-filter]:bg-background/60 grid grid-cols-[1fr_2fr_1fr] p-4 justify-items-center bg-muted w-full outline-1 outline-amber-600">
       <div></div>
-      <nav className="outline-1 outline-blue-500">
-        <ul className="flex space-x-4 flex-wrap">
-          <li>
-            <Button variant="ghost" asChild>
-              <Link
+      <div className="ml-auto  flex md:hidden items-center">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" className={""} size="icon">
+              <MenuIcon className="!size-8 outline-1 outline-amber-900 " />
+              <span className="sr-only">Toggle navigation menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[300px] sm:w-[400px] p-8">
+            <nav className="flex flex-col gap-4 text-lg font-medium pt-8">
+              <NavLink
                 to="/"
-                className="text-muted-foreground hover:text-foreground"
+                className={getNavLinkClasses}
+                onClick={() => {}} // Close sheet on click (handled by SheetContent usually)
               >
                 Home
-              </Link>
-            </Button>
-          </li>
-          <li>
-            <Button variant="ghost" asChild>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/posts"
-                className="text-muted-foreground hover:text-foreground"
+                className={getNavLinkClasses}
+                onClick={() => {}}
               >
-                Add_Post
-              </Link>
-            </Button>
-          </li>
-          <li>
-            <Button variant="ghost" asChild>
-              <Link
+                Add Post
+              </NavLink>
+              <NavLink
                 to="/categories"
-                className="text-muted-foreground hover:text-foreground"
+                className={getNavLinkClasses}
+                onClick={() => {}}
               >
                 Categories
-              </Link>
-            </Button>
-          </li>
-          <li>
-            <Button variant="ghost" asChild>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/tags"
-                className="text-muted-foreground hover:text-foreground"
+                className={getNavLinkClasses}
+                onClick={() => {}}
               >
                 Tags
-              </Link>
-            </Button>
+              </NavLink>
+              <hr className="my-2" />
+              <NavLink
+                to="/drafts"
+                className={getNavLinkClasses}
+                onClick={() => {}}
+              >
+                Drafts
+              </NavLink>
+              {hasPermission && (
+                <NavLink
+                  to="/posts/pending"
+                  className={getNavLinkClasses}
+                  onClick={() => {}}
+                >
+                  Pending
+                </NavLink>
+              )}
+              {isAdmin && (
+                <NavLink
+                  to="/register-editor"
+                  className={getNavLinkClasses}
+                  onClick={() => {}}
+                >
+                  Register Editor
+                </NavLink>
+              )}
+              <NavLink
+                to="/posts/user-pending"
+                className={getNavLinkClasses}
+                onClick={() => {}}
+              >
+                My Pending
+              </NavLink>
+              <hr className="my-2" />
+              <Button
+                className="w-full justify-start text-lg font-medium text-muted-foreground hover:text-primary px-0"
+                variant="ghost"
+                onClick={logoutUser}
+                disabled={isLoggingOut}
+              >
+                {isLoggingOut ? "Logging Out..." : "Logout"}
+              </Button>
+            </nav>
+          </SheetContent>
+        </Sheet>
+      </div>
+      <nav className="hidden md:flex outline-1 outline-blue-500">
+        <ul className="flex  space-x-4 flex-wrap">
+          <li className="px-2 flex items-center">
+            <NavLink to="/home" end={true} className={getNavLinkClasses}>
+              Home
+            </NavLink>
+          </li>
+          <li className="px-2 flex items-center">
+            <NavLink to="/posts" className={getNavLinkClasses}>
+              Add_Post
+            </NavLink>
+          </li>
+          <li className="px-2 flex items-center outline-1">
+            <NavLink to="/categories" className={getNavLinkClasses}>
+              Categories
+            </NavLink>
+          </li>
+          <li className="px-2 flex items-center">
+            <NavLink to="/tags" className={getNavLinkClasses}>
+              Tags
+            </NavLink>
           </li>
         </ul>
       </nav>
 
-      <nav className=" outline-1 outline-emerald-600 flex items-center">
+      <nav className=" hidden outline-1 outline-emerald-600 md:flex items-center">
         <DropdownMenu>
+          {user ? <Badge variant={"secondary"}> <BadgeCheckIcon /> {user.role[0]}</Badge> : null}
           <DropdownMenuTrigger>
             <Avatar>
               <AvatarImage src="/user-avatar.png" />

@@ -76,7 +76,7 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
                   <div className="space-y-3">
                     <CardHeader>
                       <div className="flex flex-wrap items-center gap-2">
-                        <CardTitle className="text-xl truncate">{post.title}</CardTitle>
+                        <CardTitle className="text-xl text-ellipsis">{post.title}</CardTitle>
                         {badge && (
                           <Badge variant={status.variant}>{status.text}</Badge>
                         )}
