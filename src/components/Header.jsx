@@ -33,14 +33,14 @@ const Header = () => {
       : "text-sm font-medium transition-colors text-muted-foreground hover:text-primary";
 
   return (
-    <header className="sticky top-0 z-50  border-b  backdrop-blur supports-[backdrop-filter]:bg-background/60 grid grid-cols-[1fr_2fr_1fr] p-4 justify-items-center bg-muted w-full outline-1 outline-amber-600">
+    <header className="sticky top-0 z-50  border-b  backdrop-blur supports-[backdrop-filter]:bg-background/60 grid grid-cols-[1fr_2fr_1fr] p-4 justify-items-center bg-muted w-full ">
       <div></div>
 
       <div className="ml-auto  flex md:hidden items-center">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" className={""} size="icon">
-              <MenuIcon className="!size-8 outline-1 outline-amber-900 " />
+              <MenuIcon className="!size-8 " />
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
@@ -113,7 +113,7 @@ const Header = () => {
       </div>
 
       {/* large screen */}
-      <nav className="hidden md:flex outline-1 outline-blue-500">
+      <nav className="hidden md:flex ">
         <ul className="flex  space-x-4 flex-wrap">
           <li className="px-2 flex items-center">
             <NavLink to="/home" end={true} className={getNavLinkClasses}>
@@ -127,7 +127,7 @@ const Header = () => {
               </NavLink>
             </li>
           )}
-          <li className="px-2 flex items-center outline-1">
+          <li className="px-2 flex items-center ">
             <NavLink to="/categories" className={getNavLinkClasses}>
               Categories
             </NavLink>
@@ -140,11 +140,11 @@ const Header = () => {
         </ul>
       </nav>
 
-      <nav className=" hidden outline-1 outline-emerald-600 md:flex items-center">
+      <nav className=" hidden  md:flex items-center">
         {isAuthenticated ? (
           <DropdownMenu>
             {user ? (
-              <Badge variant={"secondary"}>
+              <Badge variant={"primary"}>
                 {" "}
                 <BadgeCheckIcon /> {user.role[0]}
               </Badge>

@@ -34,10 +34,10 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
   const hasAuthority = authority;
 
   return (
-    <div className="grid grid-cols-[1fr_2fr_1fr] p-4 gap-4 outline-4 outline-amber-200">
-      <aside className="grid grid-cols-[1fr_2fr] justify-items-center  ring-1 ring-amber-900">
-        <div className="ring-1 ring-green-600"></div>
-        <ScrollArea className="h-[calc(100vh-8rem)] ring-1 ring-yellow-600">
+    <div className="grid grid-cols-[1fr_2fr_1fr] p-4 gap-4 ">
+      <aside className="grid grid-cols-[1fr_2fr] justify-items-center  ">
+        <div className=""></div>
+        <ScrollArea className="h-[calc(100vh-8rem)] ">
           <div className="flex flex-col space-y-2">
             {years.map((year, idx) => (
               <Button
@@ -60,11 +60,11 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
             return (
               <Card
                 key={post.id}
-                className="flex py-0 bg-muted border-none ring-2 ring-amber-500"
+                className="flex py-0 border-none "
               >
                 <Link
                   to={`/posts/${post.id}`}
-                  className="py-6 ring-2 ring-red-300"
+                  className="py-6 "
                 >
                   <div className="space-y-3">
                     <CardHeader>
@@ -95,12 +95,12 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
                       </p>
                     </CardContent>
                     <CardFooter>
-                      <div className="w-full flex flex-col space-y-2 md:space-y-0 md:flex-row  md:justify-between  md:items-center outline-3 outline-blue-300">
+                      <div className="w-full flex flex-col space-y-2 md:space-y-0 md:flex-row  md:justify-between  md:items-center ">
                         <div className="flex space-x-2">
                           {post.tags.map((tag, i) => (
                             <span
                               key={i}
-                              className="text-xs text-muted-foreground hover:bg-muted-foreground hover:text-white"
+                              className="text-xs text-muted-foreground hover:bg-muted-foreground hover:text-background"
                             >
                               #{tag.name}
                             </span>
@@ -118,7 +118,7 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
           })}
         </div>
       </div>
-      <div className="ring-1 ring-red-500"></div>
+      <div className=""></div>
     </div>
   );
 };

@@ -11,7 +11,7 @@ import { XCircle } from "lucide-react";
 
 const FilterSort = ({categoryId, categories, handleCategoryChange,tagId, tags, handleTagChange, sort, handleSortChange, clearFilters}) => {
   return (
-    <div className="container mx-auto outline-1 outline-amber-500  py-4">
+    <div className="container mx-auto   py-4">
       <div className="flex flex-col md:flex-row gap-4 justify-end  items-center">
         <Select value={categoryId} onValueChange={handleCategoryChange}>
           <SelectTrigger className="w-[210px]">
@@ -59,8 +59,6 @@ const FilterSort = ({categoryId, categories, handleCategoryChange,tagId, tags, h
           </SelectContent>
         </Select>
 
-        {/* {((categoryId && categoryId !== "all-categories") ||
-            (tagId && tagId !== "all-tags")) && ( */}
 
         {(categoryId || tagId) && (
           <Button

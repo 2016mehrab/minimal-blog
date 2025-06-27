@@ -12,7 +12,6 @@ import Register from "./Pages/Register";
 import ResetPassword from "./Pages/ResetPassword";
 import ForgotPassword from "./Pages/ForgotPassword";
 import { Toaster } from "./components/ui/sonner";
-import Post from "./Pages/Post";
 import BlogDetails from "./Pages/BlogDetails";
 import Drafts from "./Pages/Drafts";
 import EditPostWrapper from "./components/EditPostWrapper";
@@ -20,6 +19,7 @@ import PendingPosts from "./Pages/PendingPosts";
 import MyPendingBlogs from "./Pages/MyPendingBlogs";
 import EditorRegistration from "./Pages/EditorRegistration";
 import PageNotFound from "./Pages/PageNotFound";
+import Post from "./Pages/Post";
 
 const App = () => {
   const queryClient = new QueryClient({
