@@ -14,7 +14,7 @@ import Loader from "./Loader";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { BadgeCheckIcon, LogInIcon, MenuIcon } from "lucide-react";
 import { Badge } from "./ui/badge";
-import ThemeToggleButton from "./ThemeToggleButton";
+import { ThemeToggleButton } from "./ThemeToggleButton";
 
 const Header = () => {
   const { logoutUser, isLoggingOut } = useLogout();
