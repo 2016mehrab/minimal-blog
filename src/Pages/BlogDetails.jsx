@@ -102,11 +102,11 @@ const BlogDetails = () => {
 
   return (
     // <div className="p-4 md:p-16 flex flex-col md:flex-row justify-center gap-8">
-    <div className="p-4 grid grid-row-[1fr_2fr_auto] md:grid-cols-[1fr_2fr_1fr] gap-4 justify-center justify-items-center ring-1 ring-blue-500">
+    <div className="p-4 grid grid-row-[1fr_2fr_auto] md:grid-cols-[1fr_2fr_1fr] gap-4 justify-center justify-items-center ">
       {/* Table of Contents Section */}
       {/* // <aside className="w-full md:w-64 flex-shrink-0 ring-1 ring-amber-700"> */}
-      <aside className=" w-full  md:w-64 md:justify-self-end ring-1 ring-amber-700">
-        <div className="sticky top-4  border p-2 md:p-4 rounded-md bg-background shadow-sm ring-2 ring-amber-100">
+      <aside className=" w-full  md:w-64 md:justify-self-end ">
+        <div className="sticky top-4  border p-2 md:p-4 rounded-md bg-background shadow-sm ">
           {/* <div className="sticky top-4 p-4 border rounded-md bg-background shadow-sm ring-2 ring-amber-100"> */}
           <h3 className="font-semibold mb-3 text-lg">Table of Contents</h3>
           <nav>
@@ -205,7 +205,7 @@ const BlogDetails = () => {
 
         <div
           ref={contentRef}
-          className="tiptap p-4 prose min-w-[400px] md:max-w-3xl  ring-1 ring-lime-700 min-h-screen break-words"
+          className="tiptap p-4 prose min-w-[400px] md:max-w-3xl   min-h-screen break-words"
           dangerouslySetInnerHTML={{ __html: getSanitizedHTML(blog.content) }}
         />
       </div>
