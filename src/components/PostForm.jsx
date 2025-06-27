@@ -211,9 +211,9 @@ const PostForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <Card className={"outline-1 outline-amber-500 m-2 p-2"}>
-        <CardContent className="space-y-4 pt-6 outline-1 outline-amber-600">
-          <div className="space-y-2 outline-1 outline-amber-700">
+      <Card className={" m-2 p-2"}>
+        <CardContent className="space-y-4 pt-6 ">
+          <div className="space-y-2 px-2">
             <Label htmlFor="title">Title</Label>
             <Input
               id="title"
@@ -227,7 +227,7 @@ const PostForm = ({
             )}
           </div>
 
-          <div className="space-y-2 md:space-y-3 ring-1 ring-amber-500  p-2">
+          <div className="space-y-2 md:space-y-3  p-2">
             <TextEditorMenu editor={editor} />
             <EditorContent editor={editor} />
             {errors.content && (
@@ -235,7 +235,7 @@ const PostForm = ({
             )}
           </div>
 
-          <div className="space-y-2 outline-1 outline-amber-700">
+          <div className="space-y-2 px-2">
             <Label htmlFor="category">Category</Label>
             <Select value={categoryId} onValueChange={handleCategorySelect}>
               <SelectTrigger
@@ -257,7 +257,7 @@ const PostForm = ({
             )}
           </div>
 
-          <div className="space-y-2  outline-1 outline-amber-700">
+          <div className="space-y-2  px-2">
             <Label>Tags</Label>
             <Select
               value={currentSelectTagValue}
@@ -292,7 +292,7 @@ const PostForm = ({
             </div>
           </div>
 
-          <div className="space-y-2  outline-1 outline-amber-700">
+          <div className="space-y-2 px-2 ">
             <Label htmlFor="status">Status</Label>
             <Select value={status} onValueChange={setStatus}>
               <SelectTrigger id="status">
@@ -300,20 +300,14 @@ const PostForm = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={PostStatus.DRAFT}>Draft</SelectItem>
-                {/* {isEditorOrAdmin && (
-                  <SelectItem value={PostStatus.PUBLISHED}>
-                    Published
-                  </SelectItem>
-                )} */}
                 <SelectItem value={PostStatus.PENDING}>
-                  {/* {!isEditorOrAdmin ? `Request Publication` : `Pending`} */}
-                  Request Publication
+                  {!isEditorOrAdmin ? `Request Publication` : `Pending`}
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div className="flex justify-end gap-2 pt-4  outline-1 outline-amber-700">
+          <div className="flex justify-end gap-2 pt-4  ">
             {initialPost && (
               <Button
                 variant="destructive"

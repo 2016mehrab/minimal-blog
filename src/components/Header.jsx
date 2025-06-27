@@ -144,8 +144,7 @@ const Header = () => {
         {isAuthenticated ? (
           <DropdownMenu>
             {user ? (
-              <Badge variant={"primary"}>
-                {" "}
+              <Badge variant={"default"}>
                 <BadgeCheckIcon /> {user.role[0]}
               </Badge>
             ) : null}

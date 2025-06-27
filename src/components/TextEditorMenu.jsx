@@ -35,7 +35,7 @@ const TextEditorMenu = ({ editor }) => {
     const url = window.prompt("Enter the URL", previousUrl);
 
     if (url === null) {
-      return; // Cancelled
+      return; 
     }
 
     if (url === "") {
@@ -56,7 +56,7 @@ const TextEditorMenu = ({ editor }) => {
   };
 
   function getHeadingButtonText() {
-    if (!editor) return "Heading"; // Initial state or editor not ready
+    if (!editor) return "Heading"; 
     if (editor.isActive("heading", { level: 1 })) return "Heading 1";
     if (editor.isActive("heading", { level: 2 })) return "Heading 2";
     if (editor.isActive("heading", { level: 3 })) return "Heading 3";
@@ -68,7 +68,7 @@ const TextEditorMenu = ({ editor }) => {
   };
 
   return (
-    <div className="outline-1 outline-amber-800 bg-muted p-2 md:p-4 rounded-md  flex gap-2 md:gap-3 flex-wrap items-center">
+    <div className=" bg-muted p-2 md:p-4 rounded-md  flex gap-2 md:gap-3 flex-wrap items-center">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
