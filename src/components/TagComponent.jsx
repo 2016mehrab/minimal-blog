@@ -57,7 +57,7 @@ const TagComponent = () => {
           {tag.name.toLowerCase()}
         </TableCell>
         <TableCell className={"text-center"}>{tag.postCount} </TableCell>
-        <TableCell className=" flex justify-center items-center  gap-1.5 outline-2 outline-emerald-600">
+        <TableCell className=" flex justify-center items-center  gap-1.5">
           {isAdmin ? (
             <>
               <EditTagForm tag={{ id: tag.id, name: tag.name }} />
@@ -79,7 +79,7 @@ const TagComponent = () => {
 
   return (
     <div className="container py-8 px-4 min-h-screen mx-auto">
-      <Card className={"outline-1 outline-blue-600"}>
+      <Card className={""}>
         <CardHeader
           className={
             "flex flex-row items-center justify-between space-y-0 pb-4"
@@ -91,7 +91,7 @@ const TagComponent = () => {
           <CardAction>{isAdmin && <CreateTagForm />}</CardAction>
         </CardHeader>
         <CardContent>
-          <ScrollArea className={"h-screen outline-1 outline-amber-800"}>
+          <ScrollArea className={"h-screen"}>
             <TableComponent
               data={tags}
               headers={["name", "post count", "actions"]}

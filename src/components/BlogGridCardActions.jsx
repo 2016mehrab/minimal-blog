@@ -8,7 +8,7 @@ const BlogGridCardActions= ({ postId }) => {
   const { mutate: reject, isPending: isRejecting } = useBlogStatus("reject");
 
   return (
-    <div className="flex w-full md:w-auto justify-end outline-2 outline-pink-300 gap-2 md:gap-4">
+    <div className="flex w-full md:w-auto justify-end  gap-2 md:gap-4">
       <Button
         onClick={(e) => {
           e.preventDefault();
@@ -19,7 +19,7 @@ const BlogGridCardActions= ({ postId }) => {
         variant="outline"
         size="sm"
       >
-        {isApproving ? "Approving" : <CheckCircle2Icon className=" h-4 w-4" />}
+        {isApproving ? "Approving" : <CheckCircle2Icon className="!size-4" />}
       </Button>
       <Button
         type="button"
@@ -31,7 +31,7 @@ const BlogGridCardActions= ({ postId }) => {
         variant="destructive"
         size="sm"
       >
-        {isRejecting ? "Rejecting" : <CircleSlash2Icon className="h-4 w-4" />}
+        {isRejecting ? "Rejecting" : <CircleSlash2Icon className="!size-4" />}
       </Button>
     </div>
   );
