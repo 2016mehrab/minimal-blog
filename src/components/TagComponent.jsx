@@ -29,7 +29,8 @@ const TagComponent = () => {
     queryFn: fetchTags,
   });
 
-  const isAdmin = user?.role.some((r) => r === "ROLE_ADMIN") || false;
+  const isAdmin =
+    user?.role.some((r) => r === "ROLE_ADMIN" || r === "ROLE_EDITOR") || false;
   // const isAdmin = user?.role.some((r) => r === "ROLE_ADMIN") || true;
 
   if (isLoading || isLoadingUser)

@@ -69,7 +69,8 @@ const CategoryComponent = () => {
   });
   const { deleteCategory, isLoading: isDeleting } = useDeleteCategory();
 
-  const isAdmin = user?.role?.some((r) => r === "ROLE_ADMIN") || false;
+  const isAdmin =
+    user?.role?.some((r) => r === "ROLE_ADMIN" || r === "ROLE_EDITOR") || false;
 
   function handleDelete(id) {
     deleteCategory(id, {
@@ -119,8 +120,7 @@ const CategoryComponent = () => {
           <CardAction>{isAdmin && <CreateCategoryForm />}</CardAction>
         </CardHeader>
         <ScrollArea className={"h-screen"}>
-
-        <CardContent>{content}</CardContent>
+          <CardContent>{content}</CardContent>
         </ScrollArea>
       </Card>
     </div>

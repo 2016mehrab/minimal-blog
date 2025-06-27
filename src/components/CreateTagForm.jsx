@@ -14,17 +14,18 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useCreateTags } from "@/hooks/useCreateTags";
 import { toast } from "sonner";
+import constants from "@/lib/constants";
 
 const CreateTagForm = () => {
   const initialErrorState = {
-    inputString: "", 
-    'tags[]': "", 
-    general: "", 
+    inputString: "",
+    "tags[]": "",
+    general: "",
   };
 
   const initialFormState = {
     inputString: "",
-    tags: [], 
+    tags: [],
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -44,9 +45,9 @@ const CreateTagForm = () => {
     const { value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      inputString: value, 
+      inputString: value,
     }));
-    setErrors(initialErrorState)
+    setErrors(initialErrorState);
   };
 
   function handleAddTags() {
@@ -57,8 +58,20 @@ const CreateTagForm = () => {
         ...prev,
         general: "Please enter a tag name to add.",
       }));
+
       return;
     }
+    const combinedTags = [...formData.tags, ...newTags] ;
+    console.info("handleTag", combinedTags.length);
+    if (combinedTags.length> constants.MAX_TAGS_AT_A_TIME) {
+      console.info("you entered more tags");
+      setErrors((prev) => ({
+        ...prev,
+        general: `You can only add a maximum of ${constants.MAX_TAGS_AT_A_TIME} tags at a time.`,
+      }));
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       tags: [...new Set([...prev.tags, ...newTags])],
@@ -74,13 +87,11 @@ const CreateTagForm = () => {
   }
 
   const handleRemoveTag = (tagToRemove) => {
-
     setFormData((prev) => ({
       ...prev,
       tags: prev.tags.filter((tag) => tag !== tagToRemove),
     }));
-    setErrors(initialErrorState)
-
+    setErrors(initialErrorState);
   };
 
   const handleOpenChange = (open) => {
@@ -97,7 +108,7 @@ const CreateTagForm = () => {
     if (formData.tags.length === 0) {
       setErrors((prev) => ({
         ...prev,
-        'tags[]': "Please add at least one tag before submitting.",
+        "tags[]": "Please add at least one tag before submitting.",
       }));
       return;
     }
@@ -116,28 +127,27 @@ const CreateTagForm = () => {
         },
         onError: (err) => {
           toast.error(err.error.message || "Failed to add tags.");
-          console.log("onError",err.error.fieldErrors["tags[]"])
-        //   const backendFieldErrors = err.error?.fieldErrors; 
-        //   const tagsErrorMessage = backendFieldErrors?.['tags[]']; 
-        //   const generalErrorMessage = err.error?.message || "Failed to add tags.";
+          console.log("onError", err.error.fieldErrors["tags[]"]);
+          //   const backendFieldErrors = err.error?.fieldErrors;
+          //   const tagsErrorMessage = backendFieldErrors?.['tags[]'];
+          //   const generalErrorMessage = err.error?.message || "Failed to add tags.";
 
-        //   toast.error(generalErrorMessage);
+          //   toast.error(generalErrorMessage);
 
-        //   setErrors({
-        //     inputString: "",
-        //     'tags[]': tagsErrorMessage || "", 
-        //     general: generalErrorMessage,
-        //   });
+          //   setErrors({
+          //     inputString: "",
+          //     'tags[]': tagsErrorMessage || "",
+          //     general: generalErrorMessage,
+          //   });
           setErrors({
             inputString: "",
-            'tags[]': err.error.fieldErrors['tags[]'], 
+            "tags[]": err.error.fieldErrors["tags[]"],
             general: err.error.message || "Failed to add tags.",
           });
         },
       }
     );
   };
-
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
@@ -168,7 +178,7 @@ const CreateTagForm = () => {
                 id="inputString"
                 type="text"
                 value={formData.inputString}
-                placeholder="Type tags (e.g., react, css) and press Enter or click 'Add'" 
+                placeholder="Type tags (e.g., react, css) and press Enter or click 'Add'"
               />
 
               {errors.inputString && (
@@ -186,27 +196,27 @@ const CreateTagForm = () => {
                         variant={"destructive"}
                         onClick={() => handleRemoveTag(tag)}
                         asChild
-key={tag}
+                        key={tag}
                       >
-                        <li >{tag}</li>
+                        <li>{tag}</li>
                       </Button>
                     ))}
                   </ul>
                 </div>
               )}
 
-              {errors['tags[]']&& ( 
+              {errors["tags[]"] && (
                 <Alert variant="destructive">
-                  <AlertDescription>{errors['tags[]']}</AlertDescription>
+                  <AlertDescription>{errors["tags[]"]}</AlertDescription>
                 </Alert>
               )}
             </div>
 
-            {/* {errors.general && (
+            {errors.general && (
               <Alert variant="destructive">
                 <AlertDescription>{errors.general}</AlertDescription>
               </Alert>
-            )} */}
+            )}
           </div>
 
           <div className="flex justify-between items-center mt-2">
@@ -217,7 +227,9 @@ key={tag}
             >
               Add
             </Button>
-            <Button type="submit" disabled={isCreating}>Submit Tags</Button>
+            <Button type="submit" disabled={isCreating}>
+              Submit Tags
+            </Button>
           </div>
         </form>
       </DialogContent>
