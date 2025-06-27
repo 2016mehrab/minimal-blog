@@ -22,7 +22,7 @@ export const fetchPosts = async ({ queryKey }) => {
     return response.data;
   } catch (error) {
     console.error("Failed to fetch posts:", error);
-    throw new Error("Failed to fetch posts");
+    throw new Error(error.response?.data?.message || "Failed to fetch posts");
   }
 };
 
@@ -34,7 +34,7 @@ export const getPost = async ({ postId }) => {
     return response.data;
   } catch (error) {
     console.error("Failed to retrieve post:", error);
-    throw new Error("Failed to retrieve post");
+    throw new Error(error.response?.data?.message || "Failed to retrieve post");
   }
 };
 
@@ -108,7 +108,7 @@ export const fetchDrafts = async ({ queryKey }) => {
     return response.data;
   } catch (error) {
     console.error("Failed to fetch drafts:", error);
-    throw new Error("Failed to fetch drafts");
+    throw new Error(error.response?.data?.message || "Failed to fetch drafts");
   }
 };
 
@@ -136,7 +136,7 @@ export const fetchPending = async ({ queryKey }) => {
     return response.data;
   } catch (error) {
     console.error("Failed to fetch pending posts:", error);
-    throw new Error("Failed to fetch pending posts");
+    throw new Error(error.response?.data?.message || "Failed to fetch pending posts");
   }
 };
 
@@ -157,7 +157,7 @@ export const fetchUserPending = async ({ queryKey }) => {
     urlSearchParams.append("page", page - 1);
     // urlSearchParams.append("size", size.toString());
 
-    sort.split(",") .forEach((s) => urlSearchParams.append("sort", s));
+    sort.split(",").forEach((s) => urlSearchParams.append("sort", s));
     const fullURL = `${URL}?${urlSearchParams.toString()}`;
 
     const response = await apiClient.get(fullURL, { withCredentials: true });
@@ -166,7 +166,7 @@ export const fetchUserPending = async ({ queryKey }) => {
     return response.data;
   } catch (error) {
     console.error("Failed to fetch user pending posts:", error);
-    throw new Error("Failed to fetch user pending posts");
+    throw new Error(error.response?.data?.message || "Failed to fetch user pending posts");
   }
 };
 

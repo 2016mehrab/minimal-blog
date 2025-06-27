@@ -10,7 +10,7 @@ export const fetchTags= async () => {
 
   } catch (error) {
     console.error("Failed to fetch tags:", error);
-    throw new Error("Failed to fetch tags");
+    throw new Error(error.response?.data?.message || "Failed to fetch tags");
   }
 };
 

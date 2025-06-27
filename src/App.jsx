@@ -19,12 +19,14 @@ import EditPostWrapper from "./components/EditPostWrapper";
 import PendingPosts from "./Pages/PendingPosts";
 import MyPendingBlogs from "./Pages/MyPendingBlogs";
 import EditorRegistration from "./Pages/EditorRegistration";
+import PageNotFound from "./Pages/PageNotFound";
 
 const App = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         staleTime: 60 * 1000,
+        throwOnError: true,
       },
     },
   });
@@ -51,9 +53,9 @@ const App = () => {
             <Route path="posts/pending" element={<PendingPosts />} />
             <Route path="posts/user-pending" element={<MyPendingBlogs />} />
             <Route path="drafts/:id" element={<BlogDetails />} />
-            <Route path="/register-editor" element={<EditorRegistration/>} />
+            <Route path="/register-editor" element={<EditorRegistration />} />
           </Route>
-          {/* <Route path="*" element={<PageNotFound />} /> */}
+          <Route path="*" element={<PageNotFound />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />

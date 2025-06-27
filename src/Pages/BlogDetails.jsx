@@ -19,6 +19,8 @@ import { PencilIcon, TrashIcon } from "lucide-react";
 import { useDeletePost } from "@/hooks/useDeletePost";
 import { toast } from "sonner";
 import { useUser } from "@/hooks/useUser";
+import Loader from "@/components/Loader";
+import { AppError } from "@/lib/AppError";
 
 const BlogDetails = () => {
   const { id } = useParams();
@@ -30,7 +32,11 @@ const BlogDetails = () => {
 
   const { data: blog, isLoading } = useQuery({
     queryKey: ["post", id],
-    queryFn: () => getPost({ postId: id }),
+    queryFn: () =>
+      getPost({ postId: id })
+,
+    retry: false,
+    throwOnError: true,
   });
 
   useEffect(() => {
@@ -68,10 +74,15 @@ const BlogDetails = () => {
     return <div>Post doesn't exist</div>;
   }
   if (isLoading || isLoadingUser) {
-    return <div>Blog loading</div>;
+    return <Loader />;
   }
+
   function hasPermission() {
-    return blog?.author.id === user.userId || user?.role?.includes("ROLE_ADMIN") || user?.role?.includes("ROLE_EDITOR");
+    return (
+      blog?.author.id === user.userId ||
+      user?.role?.includes("ROLE_ADMIN") ||
+      user?.role?.includes("ROLE_EDITOR")
+    );
   }
 
   function handleDelete() {
