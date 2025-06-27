@@ -34,10 +34,13 @@ const Header = () => {
       : "text-sm font-medium transition-colors text-muted-foreground hover:text-primary";
 
   return (
-    <header className="sticky top-0 z-50  border-b  backdrop-blur supports-[backdrop-filter]:bg-background/60 grid grid-cols-[1fr_2fr_1fr] p-4 justify-items-center bg-muted w-full ">
+    <header className="sticky top-0 z-50  border-b  backdrop-blur supports-[backdrop-filter]:bg-background/60 grid grid-cols-[1fr_1fr] md:grid-cols-[1fr_2fr_1fr] p-4 justify-items-end md:justify-items-center bg-muted w-full ">
       <div></div>
 
-      <div className="ml-auto  flex md:hidden items-center">
+      <div className="flex md:hidden items-center">
+        <div className="flex justify-center">
+          <ThemeToggleButton />
+        </div>
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" className={""} size="icon">
@@ -105,9 +108,6 @@ const Header = () => {
                   </NavLink>
                 </>
               )}
-              <div className="mt-4 flex justify-center">
-                <ThemeToggleButton />
-              </div>
             </nav>
           </SheetContent>
         </Sheet>
@@ -141,8 +141,8 @@ const Header = () => {
         </ul>
       </nav>
 
-      <nav className=" hidden  md:flex items-center">
-        <ThemeToggleButton/>
+      <nav className=" hidden  md:flex gap-2 items-center">
+        <ThemeToggleButton />
         {isAuthenticated ? (
           <DropdownMenu>
             {user ? (
