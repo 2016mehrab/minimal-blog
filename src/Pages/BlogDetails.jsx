@@ -32,9 +32,7 @@ const BlogDetails = () => {
 
   const { data: blog, isLoading } = useQuery({
     queryKey: ["post", id],
-    queryFn: () =>
-      getPost({ postId: id })
-,
+    queryFn: () => getPost({ postId: id }),
     retry: false,
     throwOnError: true,
   });
@@ -71,8 +69,13 @@ const BlogDetails = () => {
   }, [blog]); // Re-run when blog data changes
 
   if (id === null || id === undefined) {
-    return <div>Post doesn't exist</div>;
+    return (
+      <div className="flex-grow flex items-center justify-center p-8">
+        <p className="text-xl text-muted-foreground">Post doesn't exist</p>
+      </div>
+    );
   }
+
   if (isLoading || isLoadingUser) {
     return <Loader />;
   }
@@ -202,7 +205,7 @@ const BlogDetails = () => {
 
         <div
           ref={contentRef}
-          className="tiptap p-4 prose min-w-[400px] md:max-w-3xl  ring-1 ring-lime-700"
+          className="tiptap p-4 prose min-w-[400px] md:max-w-3xl  ring-1 ring-lime-700 min-h-screen break-words"
           dangerouslySetInnerHTML={{ __html: getSanitizedHTML(blog.content) }}
         />
       </div>
