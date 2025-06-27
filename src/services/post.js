@@ -14,7 +14,7 @@ export const fetchPosts = async ({ queryKey }) => {
 
     sort.split(",").forEach((s) => params.append("sort", s));
 
-    params.append("page", page - 1);
+    params.append("page", Math.max(page - 1, 0));
     const URL = constants.POST_URL + `?${params.toString()}`;
     const response = await apiClient.get(URL, null, { withCredentials: true });
 
@@ -91,7 +91,7 @@ export const fetchDrafts = async ({ queryKey }) => {
   try {
     const [_key, _, page, sort, categoryId, tagId] = queryKey;
     const params = new URLSearchParams();
-    params.append("page", page - 1);
+    params.append("page", Math.max(page - 1, 0));
     if (categoryId) {
       params.append("categoryId", categoryId);
     }
@@ -124,7 +124,7 @@ export const fetchPending = async ({ queryKey }) => {
     if (tagId) {
       urlSearchParams.append("tagId", tagId);
     }
-    urlSearchParams.append("page", page - 1);
+    urlSearchParams.append("page", Math.max(page - 1, 0));
     // urlSearchParams.append("size", size.toString());
 
     sort.split(",").forEach((s) => urlSearchParams.append("sort", s));
@@ -136,7 +136,9 @@ export const fetchPending = async ({ queryKey }) => {
     return response.data;
   } catch (error) {
     console.error("Failed to fetch pending posts:", error);
-    throw new Error(error.response?.data?.message || "Failed to fetch pending posts");
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch pending posts"
+    );
   }
 };
 
@@ -154,7 +156,7 @@ export const fetchUserPending = async ({ queryKey }) => {
     if (tagId) {
       urlSearchParams.append("tagId", tagId);
     }
-    urlSearchParams.append("page", page - 1);
+    urlSearchParams.append("page", Math.max(page - 1, 0));
     // urlSearchParams.append("size", size.toString());
 
     sort.split(",").forEach((s) => urlSearchParams.append("sort", s));
@@ -166,7 +168,9 @@ export const fetchUserPending = async ({ queryKey }) => {
     return response.data;
   } catch (error) {
     console.error("Failed to fetch user pending posts:", error);
-    throw new Error(error.response?.data?.message || "Failed to fetch user pending posts");
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch user pending posts"
+    );
   }
 };
 

@@ -112,12 +112,28 @@ const PublishedPosts = () => {
         tagId={tagId}
         tags={tags}
       />
-      <BlogGrid blogPosts={blogPosts} years={years} />
+       {blogPosts.length > 0 ? (
+        <>
+          <BlogGrid blogPosts={blogPosts} years={years} />
+          <PaginationComponent
+            currPage={currPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </>
+      ) : (
+        <div className="flex-grow flex items-center justify-center p-8">
+          <p className="text-xl text-muted-foreground">
+            No blog posts found matching your criteria.
+          </p>
+        </div>
+      )}
+      {/* <BlogGrid blogPosts={blogPosts} years={years} />
       <PaginationComponent
         currPage={currPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
-      />
+      /> */}
     </div>
   );
 };

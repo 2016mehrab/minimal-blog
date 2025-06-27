@@ -124,7 +124,24 @@ const PendingPostComponent = () => {
         tagId={tagId}
         tags={tags}
       />
-      <BlogGrid
+
+       {blogPosts.length > 0 ? (
+        <>
+          <BlogGrid badge={true} authority={authority} blogPosts={blogPosts} years={years} />
+          <PaginationComponent
+            currPage={currPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </>
+      ) : (
+        <div className="flex-grow flex items-center min-h-screen justify-center p-8">
+          <p className="text-xl text-muted-foreground">
+            No blog posts found matching your criteria.
+          </p>
+        </div>
+      )}
+      {/* <BlogGrid
         blogPosts={blogPosts}
         years={years}
         badge={true}
@@ -134,7 +151,7 @@ const PendingPostComponent = () => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
         currPage={currPage}
-      />
+      /> */}
     </div>
   );
 };

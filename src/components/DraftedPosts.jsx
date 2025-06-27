@@ -63,24 +63,6 @@ const DraftedPosts = () => {
     .sort()
     .reverse();
 
-  if (blogPosts?.length === 0) {
-    return (
-      <div>
-        <FilterSort
-          categories={categories}
-          categoryId={categoryId}
-          handleCategoryChange={handleCategoryChange}
-          clearFilters={clearFilters}
-          handleSortChange={handleSortChange}
-          handleTagChange={handleTagChange}
-          sort={sort}
-          tagId={tagId}
-          tags={tags}
-        />
-        <p>No drafts available.</p>
-      </div>
-    );
-  }
 
   function handlePageChange(newPage) {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -134,13 +116,30 @@ const DraftedPosts = () => {
         tagId={tagId}
         tags={tags}
       />
-      <BlogGrid years={years} badge={true} blogPosts={blogPosts} />
+
+       {blogPosts.length > 0 ? (
+        <>
+          <BlogGrid badge={true}  blogPosts={blogPosts} years={years} />
+          <PaginationComponent
+            currPage={currPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </>
+      ) : (
+        <div className="flex-grow flex items-center min-h-screen justify-center p-8">
+          <p className="text-xl text-muted-foreground">
+            No blog posts found matching your criteria.
+          </p>
+        </div>
+      )}
+      {/* <BlogGrid years={years} badge={true} blogPosts={blogPosts} />
 
       <PaginationComponent
         currPage={currPage}
         onPageChange={handlePageChange}
         totalPages={totalPages}
-      />
+      /> */}
     </div>
   );
 };
