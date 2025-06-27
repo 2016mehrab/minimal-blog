@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import TableComponent from "./TableComponent";
 import CreateCategoryForm from "./CreateCategoryForm";
-import EditCategoryForm from "./EditCategoryForm";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTags } from "@/services/tag";
 import { useUser } from "@/hooks/useUser";
@@ -12,9 +11,18 @@ import CreateTagForm from "./CreateTagForm";
 import { useDeleteTag } from "@/hooks/useDeleteTag";
 import { toast } from "sonner";
 import EditTagForm from "./EditTagForm";
+import Loader from "./Loader";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { ScrollArea } from "./ui/scroll-area";
 
 const TagComponent = () => {
-  const {deleteTag, isLoading:isDeleting} =useDeleteTag();
+  const { deleteTag, isLoading: isDeleting } = useDeleteTag();
   const { user, isLoading: isLoadingUser } = useUser();
   const { data: tags = [], isLoading } = useQuery({
     queryKey: ["tags"],
@@ -22,26 +30,23 @@ const TagComponent = () => {
   });
 
   const isAdmin = user?.role.some((r) => r === "ROLE_ADMIN") || false;
+  // const isAdmin = user?.role.some((r) => r === "ROLE_ADMIN") || true;
 
   if (isLoading || isLoadingUser)
     return (
       <>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">Categories</h2>
-          {isLoadingUser ? null : isAdmin && <CreateCategoryForm />}
-        </div>
-        <p>Loading categories...</p>
+        <Loader />
       </>
     );
 
   function handleDelete(id) {
     console.log("Deleted tag with id:", id);
-    deleteTag(id,{
+    deleteTag(id, {
       onSuccess: () => toast.success("Tag deleted"),
       onError: (err) => {
         toast.error(err.message || "Failed to delete tag");
       },
-    })
+    });
   }
 
   function renderRow(tag, index, { isAdmin, handleDelete, isDeleting }) {
@@ -71,21 +76,33 @@ const TagComponent = () => {
   }
 
   return (
-    <>
-      <div className="flex justify-between">
-        <h2>Tags</h2>
-        {isAdmin && <CreateTagForm/>}
-      </div>
-      <TableComponent
-        data={tags}
-        headers={["name", "post count", "actions"]}
-        renderRow={renderRow}
-        caption="A list of available tags"
-        noDataContent="No tags found."
-        renderRowProps={{ isAdmin, handleDelete, isDeleting }}
-        colSpanForNoData={3}
-      />
-    </>
+    <div className="container py-8 px-4 min-h-screen mx-auto">
+      <Card className={"outline-1 outline-blue-600"}>
+        <CardHeader
+          className={
+            "flex flex-row items-center justify-between space-y-0 pb-4"
+          }
+        >
+          <CardTitle className={"text-2xl font-bold text-foreground"}>
+            Tags
+          </CardTitle>
+          <CardAction>{isAdmin && <CreateTagForm />}</CardAction>
+        </CardHeader>
+        <CardContent>
+          <ScrollArea className={"h-screen outline-1 outline-amber-800"}>
+            <TableComponent
+              data={tags}
+              headers={["name", "post count", "actions"]}
+              renderRow={renderRow}
+              caption="A list of available tags"
+              noDataContent="No tags found."
+              renderRowProps={{ isAdmin, handleDelete, isDeleting }}
+              colSpanForNoData={3}
+            />
+          </ScrollArea>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
