@@ -17,31 +17,27 @@ import BlogGridCardActions from "./BlogGridCardActions";
 
 function getStatusBadge(status) {
   switch (status) {
-    // TODO: fix palette
     case "PUBLISHED":
-      return { text: "Published", variant: "default" };
+      return { text: "Published", className: "bg-chart-1 text-primary-foreground" };
     case "DRAFT":
-      return { text: "Draft", variant: "outline" };
+      return { text: "Draft", className: "bg-chart-2 text-secondary-foreground" };
     case "PENDING":
-      return { text: "Pending", variant: "destructive" };
+      return { text: "Pending", className: "bg-chart-5 text-accent-foreground" };
     default:
       return null;
   }
 }
+
 const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
   console.log("fetched posts", blogPosts);
 
   const hasAuthority = authority;
 
   return (
-    // <div className="flex p-4 gap-4 outline-4 outline-amber-200">
     <div className="grid grid-cols-[1fr_2fr_1fr] p-4 gap-4 outline-4 outline-amber-200">
-      {/* Sidebar for years */}
-      {/* <aside className="w-32"> */}
       <aside className="grid grid-cols-[1fr_2fr] justify-items-center  ring-1 ring-amber-900">
         <div className="ring-1 ring-green-600"></div>
         <ScrollArea className="h-[calc(100vh-8rem)] ring-1 ring-yellow-600">
-          {/* <ScrollArea className="h-[calc(100vh-8rem)] "> */}
           <div className="flex flex-col space-y-2">
             {years.map((year, idx) => (
               <Button
@@ -56,7 +52,6 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
         </ScrollArea>
       </aside>
 
-      {/* Main content area */}
       <div className="w-full min-w-64  max-w-2xl mx-auto">
         <div className="space-y-4 ">
           {blogPosts?.map((post) => {
@@ -71,19 +66,21 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
                   to={`/posts/${post.id}`}
                   className="py-6 ring-2 ring-red-300"
                 >
-                  {/* Thumbnail placeholder (you can replace with an image) */}
-                  {/* <div className="w-48 h-48 bg-gray-700 flex-shrink-0" /> */}
                   <div className="space-y-3">
                     <CardHeader>
                       <div className="flex flex-wrap items-center gap-2">
                         <CardTitle className="text-xl text-ellipsis">{post.title}</CardTitle>
-                        {badge && (
-                          <Badge variant={status.variant}>{status.text}</Badge>
+                        {badge && status && (
+                          <Badge className={status.className}>{status.text}</Badge>
+                        )}
+                        {post.category && (
+                          <Badge variant="outline" className="text-muted-foreground border-muted-foreground/50">
+                            {post.category.name}
+                          </Badge>
                         )}
                       </div>
                       <CardDescription className="text-muted-foreground break-words overflow-hidden">
                         {getTruncatedPlainText(post.content, 200)}
-                        {/* {post.content} */}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>

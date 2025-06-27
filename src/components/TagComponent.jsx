@@ -63,6 +63,7 @@ const TagComponent = () => {
               <EditTagForm tag={{ id: tag.id, name: tag.name }} />
               <Button
                 disabled={isDeleting}
+                variant={"destructive"}
                 onClick={() => handleDelete(tag.id)}
               >
                 <Trash />

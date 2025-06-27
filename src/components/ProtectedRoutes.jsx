@@ -8,7 +8,7 @@ const ProtectedRoutes = () => {
   const { user, isLoading } = useUser();
 
   if (isLoading) {
-    <Loader/>
+   return <Loader/>
   }
 
   if (user) {
