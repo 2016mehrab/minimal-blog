@@ -6,5 +6,6 @@ const constants = {
   MAX_TAGS_ALLOWED: 5,
   PAGE_SIZE: 5,
   MAX_TAGS_AT_A_TIME: 10,
+  PUBLIC_API_ENDPOINTS: ["/categories", "/tags", "/posts"],
 };
 export default constants;

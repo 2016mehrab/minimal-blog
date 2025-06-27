@@ -35,31 +35,32 @@ const App = () => {
       <ReactQueryDevtools initialIsOpen={false} />
       <BrowserRouter>
         <Routes>
-          <Route
-            element={
-              <ProtectedRoutes>
-                <AppLayout />
-              </ProtectedRoutes>
-            }
-          >
+
+          <Route element={<AppLayout />}>
             <Route index element={<Navigate replace to="home" />} />
             <Route path="categories" element={<Category />} />
             <Route path="tags" element={<Tag />} />
             <Route path="home" element={<Home />} />
-            <Route path="posts" element={<Post />} />
+          </Route>
+
+          <Route element={<ProtectedRoutes />}>
+            <Route path="create-post" element={<Post />} />
+            <Route path="posts/:id" element={<BlogDetails />} />
             <Route path="drafts" element={<Drafts />} />
             <Route path="edit-post/:postId" element={<EditPostWrapper />} />
-            <Route path="posts/:id" element={<BlogDetails />} />
             <Route path="posts/pending" element={<PendingPosts />} />
             <Route path="posts/user-pending" element={<MyPendingBlogs />} />
             <Route path="drafts/:id" element={<BlogDetails />} />
             <Route path="/register-editor" element={<EditorRegistration />} />
           </Route>
+
+          {/* public routes */}
           <Route path="*" element={<PageNotFound />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+
         </Routes>
         <Toaster />
       </BrowserRouter>

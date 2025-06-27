@@ -8,6 +8,7 @@ import PaginationComponent from "./PaginationComponent";
 import { fetchCategories } from "@/services/category";
 import { fetchTags } from "@/services/tag";
 import FilterSort from "./FilterSort";
+import NoResultsFound from "./NoResultsFound";
 
 const PublishedPosts = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -122,11 +123,7 @@ const PublishedPosts = () => {
           />
         </>
       ) : (
-        <div className="flex-grow flex items-center justify-center p-8">
-          <p className="text-xl text-muted-foreground">
-            No blog posts found matching your criteria.
-          </p>
-        </div>
+        <NoResultsFound/>
       )}
       {/* <BlogGrid blogPosts={blogPosts} years={years} />
       <PaginationComponent

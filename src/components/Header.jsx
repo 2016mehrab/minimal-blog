@@ -1,7 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Link, NavLink } from "react-router";
-import { apiClient } from "@/services/apiClient";
 import { useLogout } from "@/hooks/useLogout";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
@@ -13,28 +12,20 @@ import {
 import { useUser } from "@/hooks/useUser";
 import Loader from "./Loader";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { BadgeCheckIcon, MenuIcon } from "lucide-react";
+import { BadgeCheckIcon, LogInIcon, MenuIcon } from "lucide-react";
 import { Badge } from "./ui/badge";
 
 const Header = () => {
   const { logoutUser, isLoggingOut } = useLogout();
   const { user, isLoading: isLoadingUser } = useUser();
 
-  async function handlePing() {
-    try {
-      await apiClient.post("/posts/ping");
-      console.log("Ping success");
-    } catch (e) {
-      console.error("Ping error", e.response?.data || e.message);
-    }
-  }
-
   if (isLoadingUser) return <Loader />;
-  const isAdmin = user.role.includes("ROLE_ADMIN") || false;
+
+  const isAuthenticated = !!user;
+  const isAdmin = user?.role.includes("ROLE_ADMIN") || false;
   const hasPermission =
-    user.role.includes("ROLE_ADMIN") ||
-    user.role.includes("ROLE_EDITOR") ||
-    false;
+    isAuthenticated &&
+    (user.role.includes("ROLE_ADMIN") || user.role.includes("ROLE_EDITOR"));
 
   const getNavLinkClasses = ({ isActive }) =>
     isActive
@@ -44,6 +35,7 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50  border-b  backdrop-blur supports-[backdrop-filter]:bg-background/60 grid grid-cols-[1fr_2fr_1fr] p-4 justify-items-center bg-muted w-full outline-1 outline-amber-600">
       <div></div>
+
       <div className="ml-auto  flex md:hidden items-center">
         <Sheet>
           <SheetTrigger asChild>
@@ -54,80 +46,73 @@ const Header = () => {
           </SheetTrigger>
           <SheetContent side="left" className="w-[300px] sm:w-[400px] p-8">
             <nav className="flex flex-col gap-4 text-lg font-medium pt-8">
-              <NavLink
-                to="/"
-                className={getNavLinkClasses}
-                onClick={() => {}} // Close sheet on click (handled by SheetContent usually)
-              >
+              <NavLink to="/home" className={getNavLinkClasses}>
                 Home
               </NavLink>
-              <NavLink
-                to="/posts"
-                className={getNavLinkClasses}
-                onClick={() => {}}
-              >
-                Add Post
-              </NavLink>
-              <NavLink
-                to="/categories"
-                className={getNavLinkClasses}
-                onClick={() => {}}
-              >
+              {isAuthenticated && (
+                <NavLink
+                  to="/create-post"
+                  className={getNavLinkClasses}
+                  end={true}
+                >
+                  Add Post
+                </NavLink>
+              )}
+              <NavLink to="/categories" className={getNavLinkClasses}>
                 Categories
               </NavLink>
-              <NavLink
-                to="/tags"
-                className={getNavLinkClasses}
-                onClick={() => {}}
-              >
+              <NavLink to="/tags" className={getNavLinkClasses}>
                 Tags
               </NavLink>
-              <hr className="my-2" />
-              <NavLink
-                to="/drafts"
-                className={getNavLinkClasses}
-                onClick={() => {}}
-              >
-                Drafts
-              </NavLink>
-              {hasPermission && (
-                <NavLink
-                  to="/posts/pending"
-                  className={getNavLinkClasses}
-                  onClick={() => {}}
-                >
-                  Pending
-                </NavLink>
+              {isAuthenticated ? (
+                <>
+                  <hr className="my-2" />
+                  <NavLink to="/drafts" className={getNavLinkClasses}>
+                    Drafts
+                  </NavLink>
+                  {hasPermission && (
+                    <NavLink to="/posts/pending" className={getNavLinkClasses}>
+                      Pending
+                    </NavLink>
+                  )}
+                  {isAdmin && (
+                    <NavLink
+                      to="/register-editor"
+                      className={getNavLinkClasses}
+                    >
+                      Register Editor
+                    </NavLink>
+                  )}
+                  <NavLink
+                    to="/posts/user-pending"
+                    className={getNavLinkClasses}
+                  >
+                    My Pending
+                  </NavLink>
+                  <hr className="my-2" />
+                  <Button
+                    className="w-full justify-start text-lg font-medium text-muted-foreground hover:text-primary px-0"
+                    variant="ghost"
+                    onClick={logoutUser}
+                    disabled={isLoggingOut}
+                  >
+                    {isLoggingOut ? "Logging Out..." : "Logout"}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <hr className="my-2" />
+                  <NavLink to={"/login"} className={getNavLinkClasses}>
+                    <LogInIcon className="!size-4" />
+                  </NavLink>
+                </>
               )}
-              {isAdmin && (
-                <NavLink
-                  to="/register-editor"
-                  className={getNavLinkClasses}
-                  onClick={() => {}}
-                >
-                  Register Editor
-                </NavLink>
-              )}
-              <NavLink
-                to="/posts/user-pending"
-                className={getNavLinkClasses}
-                onClick={() => {}}
-              >
-                My Pending
-              </NavLink>
-              <hr className="my-2" />
-              <Button
-                className="w-full justify-start text-lg font-medium text-muted-foreground hover:text-primary px-0"
-                variant="ghost"
-                onClick={logoutUser}
-                disabled={isLoggingOut}
-              >
-                {isLoggingOut ? "Logging Out..." : "Logout"}
-              </Button>
             </nav>
           </SheetContent>
         </Sheet>
       </div>
+
+      {/* large screen */}
       <nav className="hidden md:flex outline-1 outline-blue-500">
         <ul className="flex  space-x-4 flex-wrap">
           <li className="px-2 flex items-center">
@@ -135,11 +120,13 @@ const Header = () => {
               Home
             </NavLink>
           </li>
-          <li className="px-2 flex items-center">
-            <NavLink to="/posts" className={getNavLinkClasses}>
-              Add_Post
-            </NavLink>
-          </li>
+          {isAuthenticated && (
+            <li className="px-2 flex items-center">
+              <NavLink to="/create-post" className={getNavLinkClasses}>
+                Add-Post
+              </NavLink>
+            </li>
+          )}
           <li className="px-2 flex items-center outline-1">
             <NavLink to="/categories" className={getNavLinkClasses}>
               Categories
@@ -154,72 +141,86 @@ const Header = () => {
       </nav>
 
       <nav className=" hidden outline-1 outline-emerald-600 md:flex items-center">
-        <DropdownMenu>
-          {user ? <Badge variant={"secondary"}> <BadgeCheckIcon /> {user.role[0]}</Badge> : null}
-          <DropdownMenuTrigger>
-            <Avatar>
-              <AvatarImage src="/user-avatar.png" />
-              <AvatarFallback>User Avatar</AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>
-              <Button variant="ghost" asChild>
-                <Link
-                  to="/drafts"
-                  className="w-full text-muted-foreground hover:text-foreground"
-                >
-                  Drafts
-                </Link>
-              </Button>
-            </DropdownMenuItem>
+        {isAuthenticated ? (
+          <DropdownMenu>
+            {user ? (
+              <Badge variant={"secondary"}>
+                {" "}
+                <BadgeCheckIcon /> {user.role[0]}
+              </Badge>
+            ) : null}
+            <DropdownMenuTrigger>
+              <Avatar>
+                <AvatarImage src="/user-avatar.png" />
+                <AvatarFallback>User Avatar</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>
+                <Button variant="ghost" asChild>
+                  <Link
+                    to="/drafts"
+                    className="w-full text-muted-foreground hover:text-foreground"
+                  >
+                    Drafts
+                  </Link>
+                </Button>
+              </DropdownMenuItem>
 
-            {hasPermission && (
+              {hasPermission && (
+                <DropdownMenuItem>
+                  <Button variant="ghost" asChild>
+                    <Link
+                      to="/posts/pending"
+                      className="w-full text-muted-foreground hover:text-foreground"
+                    >
+                      Pending
+                    </Link>
+                  </Button>
+                </DropdownMenuItem>
+              )}
+              {isAdmin && (
+                <DropdownMenuItem>
+                  <Button variant="ghost" asChild>
+                    <Link
+                      to="/register-editor"
+                      className="w-full text-muted-foreground hover:text-foreground"
+                    >
+                      Register Editor
+                    </Link>
+                  </Button>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem>
                 <Button variant="ghost" asChild>
                   <Link
-                    to="/posts/pending"
+                    to="/posts/user-pending"
                     className="w-full text-muted-foreground hover:text-foreground"
                   >
-                    Pending
+                    My Pending
                   </Link>
                 </Button>
               </DropdownMenuItem>
-            )}
-            {isAdmin && (
               <DropdownMenuItem>
-                <Button variant="ghost" asChild>
-                  <Link
-                    to="/register-editor"
-                    className="w-full text-muted-foreground hover:text-foreground"
-                  >
-                    Register Editor
-                  </Link>
-                </Button>
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuItem>
-              <Button variant="ghost" asChild>
-                <Link
-                  to="/posts/user-pending"
+                <Button
                   className="w-full text-muted-foreground hover:text-foreground"
+                  variant="ghost"
+                  onClick={logoutUser}
+                  disabled={isLoggingOut}
                 >
-                  My Pending
-                </Link>
-              </Button>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Button
-                className="w-full text-muted-foreground hover:text-foreground"
-                variant="ghost"
-                onClick={logoutUser}
-                disabled={isLoggingOut}
-              >
-                {isLoggingOut ? "Logging Out..." : "Logout"}
-              </Button>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+                  {isLoggingOut ? "Logging Out..." : "Logout"}
+                </Button>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Button asChild>
+            <Link to={"/login"}>
+              <LogInIcon className="!size-4" />
+              Login
+            </Link>
+          </Button>
+        )}
       </nav>
     </header>
   );

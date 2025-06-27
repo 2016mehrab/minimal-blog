@@ -4,6 +4,14 @@ import axios from "axios";
 import { logout, refreshToken } from "./auth";
 
 const queryClient = new QueryClient();
+
+function isPublicEndpoint(url) {
+  const path = url.split("?")[0].replace(constants.API_URL, "");
+  return constants.PUBLIC_API_ENDPOINTS.some((endpoint) =>
+    path.startsWith(endpoint)
+  );
+}
+
 export const apiClient = axios.create({
   baseURL: constants.API_URL,
   withCredentials: true,
@@ -24,6 +32,11 @@ function processQueue(error, token = null) {
 }
 
 apiClient.interceptors.request.use(async (config) => {
+  if(isPublicEndpoint(config.url)){
+    delete config.headers.Authorization;
+    return config;
+  }
+
   const authDataRaw = localStorage.getItem("auth");
   let authData = authDataRaw ? JSON.parse(authDataRaw) : null;
   let accessToken = authData?.accessToken;
@@ -89,6 +102,9 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     console.info("error response from res intercept", error.response);
+    if(isPublicEndpoint(originalRequest.url)){
+      return Promise.reject(error);
+    }
 
     if (
       error?.response?.status === 401 &&
@@ -154,11 +170,11 @@ apiClient.interceptors.response.use(
         "Received 403 Forbidden. Invalidating session and redirecting to login."
       );
       await logout();
-      localStorage.removeItem("auth"); 
+      localStorage.removeItem("auth");
       queryClient.invalidateQueries(["user"]);
-      queryClient.clear(); 
+      queryClient.clear();
       window.location.href = "/login";
-      return Promise.reject(error); 
+      return Promise.reject(error);
     }
 
     return Promise.reject(error);

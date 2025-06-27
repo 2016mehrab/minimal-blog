@@ -84,7 +84,7 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm text-muted-foreground ">
+                      <p className="text-sm text-muted-foreground font-semibold">
                         {post.author.name} •{" "}
                         {new Date(post.createdAt).toLocaleDateString("en-Us", {
                           month: "long",

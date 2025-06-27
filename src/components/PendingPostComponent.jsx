@@ -9,6 +9,7 @@ import Loader from "./Loader";
 import { fetchCategories } from "@/services/category";
 import { fetchTags } from "@/services/tag";
 import FilterSort from "./FilterSort";
+import NoResultsFound from "./NoResultsFound";
 
 const PendingPostComponent = () => {
   const { user, isLoading: isLoadingUser } = useUser();
@@ -135,23 +136,8 @@ const PendingPostComponent = () => {
           />
         </>
       ) : (
-        <div className="flex-grow flex items-center min-h-screen justify-center p-8">
-          <p className="text-xl text-muted-foreground">
-            No blog posts found matching your criteria.
-          </p>
-        </div>
+        <NoResultsFound/>
       )}
-      {/* <BlogGrid
-        blogPosts={blogPosts}
-        years={years}
-        badge={true}
-        authority={authority}
-      />
-      <PaginationComponent
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-        currPage={currPage}
-      /> */}
     </div>
   );
 };

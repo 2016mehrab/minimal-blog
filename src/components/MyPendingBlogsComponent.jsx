@@ -9,6 +9,7 @@ import PaginationComponent from "./PaginationComponent";
 import { fetchCategories } from "@/services/category";
 import { fetchTags } from "@/services/tag";
 import FilterSort from "./FilterSort";
+import NoResultsFound from "./NoResultsFound";
 
 const MyPendingBlogsComponent = () => {
   const { user, isLoading: isLoadingUser } = useUser();
@@ -144,11 +145,7 @@ const MyPendingBlogsComponent = () => {
           />
         </>
       ) : (
-        <div className="flex-grow flex items-center min-h-screen justify-center p-8">
-          <p className="text-xl text-muted-foreground">
-            No blog posts found matching your criteria.
-          </p>
-        </div>
+        <NoResultsFound/>
       )}
       {/* <BlogGrid
         blogPosts={blogPosts}
