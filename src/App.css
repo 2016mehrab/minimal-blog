@@ -6,10 +6,19 @@
   /* Light purple for inline code background */
   --purple-light: #f3e8ff; /* A very light purple, e.g., Tailwind's purple-50 */
 
+    .dark & { /* Applies these styles when the parent (e.g., <html>) has the .dark class */
+    --purple: #a78bfa; /* A slightly lighter purple (e.g., Tailwind's purple-400) for visibility in dark mode */
+    --purple-contrast: #c4b5fd; /* An even lighter purple (e.g., Tailwind's purple-300) for hover in dark mode */
+    --purple-light: rgba(167, 139, 250, 0.2);
+  }
+
   :first-child {
     margin-top: 0;
   }
-
+  * {
+    color: var(--color-foreground);
+    /* background: var(--color-background); */
+  }
   /* List styles */
   ul,
   ol {
@@ -73,6 +82,9 @@
     }
   }
 
+  mark{
+    color: var(--color-sidebar-primary);
+  }
   /* Code and preformatted text styles */
   code {
     background-color: var(--purple-light);
