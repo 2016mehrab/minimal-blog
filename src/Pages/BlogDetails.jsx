@@ -209,7 +209,7 @@ const BlogDetails = () => {
           dangerouslySetInnerHTML={{ __html: getSanitizedHTML(blog.content) }}
         />
       </div>
-      <div className="ring-1 ring-gray-500 "></div>
+      <div className=""></div>
     </div>
   );
 };

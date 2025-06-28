@@ -27,23 +27,23 @@ const EditorRegistration = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto grid grid-rows-[1fr_5fr_1fr]  min-h-screen outline-2 outline-blue-600">
+    <div className="max-w-2xl mx-auto grid grid-rows-[1fr_5fr_1fr]  min-h-screen ">
       <div></div>
       <RegisterForm
-        className="outline-1 outline-amber-600 "
+        className=""
         title="Register New Editor"
         description="Enter details for the new editor account"
-        submitButtonText="Create Editor"
+        submitButtonText="Register Editor"
         availableRoles={["ROLE_EDITOR"]} 
         defaultRole="ROLE_EDITOR" 
         onSubmit={handleSubmit}
         isLoading={isLoading}
         backendErrors={{
-          general: errors?.error?.message, // Access error.message from react-query mutate hook
-          fieldErrors: errors?.error?.fieldErrors, // Assuming backend provides this structure
+          general: errors?.error?.message, 
+          fieldErrors: errors?.error?.fieldErrors, 
         }}
       />
-      <div className="outline-1 outline-blue-400"></div>
+      <div className=""></div>
     </div>
   );
 };
