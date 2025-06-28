@@ -35,7 +35,7 @@ const TextEditorMenu = ({ editor }) => {
     const url = window.prompt("Enter the URL", previousUrl);
 
     if (url === null) {
-      return; 
+      return;
     }
 
     if (url === "") {
@@ -51,12 +51,12 @@ const TextEditorMenu = ({ editor }) => {
         .setLink({ href: url })
         .run();
     } catch (e) {
-      alert(`Error setting link: ${e.message}`);
+      console.error(`Error setting link: ${e.message}`);
     }
   };
 
   function getHeadingButtonText() {
-    if (!editor) return "Heading"; 
+    if (!editor) return "Heading";
     if (editor.isActive("heading", { level: 1 })) return "Heading 1";
     if (editor.isActive("heading", { level: 2 })) return "Heading 2";
     if (editor.isActive("heading", { level: 3 })) return "Heading 3";
@@ -67,8 +67,14 @@ const TextEditorMenu = ({ editor }) => {
     editor?.chain().focus().toggleHeading({ level }).run();
   };
 
+  const getActiveButtonClasses = (isActive) => {
+    return isActive
+      ? "bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90"
+      : "";
+  };
+
   return (
-    <div className=" bg-muted p-2 md:p-4 rounded-md  flex gap-2 md:gap-3 flex-wrap items-center">
+    <div className="bg-muted p-2 md:p-4 rounded-md flex gap-2 md:gap-3 flex-wrap items-center">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -78,58 +84,44 @@ const TextEditorMenu = ({ editor }) => {
               editor &&
               (editor.isActive("heading", { level: 1 }) ||
                 editor.isActive("heading", { level: 2 }) ||
-                editor.isActive("heading", { level: 3 }))
-                ? "bg-accent text-accent-foreground"
+                editor.isActive("heading", { level: 3 }) ||
+                (!editor.isActive("heading") && editor.isActive("paragraph")))
+                ? getActiveButtonClasses(true)
                 : ""
             }
           >
             {getHeadingButtonText()} <ChevronDown className="ml-1 h-4 w-4" />
           </Button>
-
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="center"
-          className={"outline-1 outline-red-400 "}
+          className="bg-popover text-popover-foreground border-border"
         >
           <DropdownMenuItem
             onSelect={() => handleHeadingSelect(1)}
-            className={`justify-center  ${
-              editor?.isActive("heading", { level: 1 })
-                ? "bg-accent text-accent-background"
-                : ""
-            } `}
+            className={`justify-center ${getActiveButtonClasses(editor?.isActive("heading", { level: 1 }))}`}
           >
             Heading 1
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={() => handleHeadingSelect(2)}
-            className={`justify-center  ${
-              editor?.isActive("heading", { level: 2 })
-                ? "bg-accent text-accent-background"
-                : ""
-            } `}
+            className={`justify-center ${getActiveButtonClasses(editor?.isActive("heading", { level: 2 }))}`}
           >
             Heading 2
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={() => handleHeadingSelect(3)}
-            className={`justify-center  ${
-              editor?.isActive("heading", { level: 3 })
-                ? "bg-accent text-accent-background"
-                : ""
-            } `}
+            className={`justify-center ${getActiveButtonClasses(editor?.isActive("heading", { level: 3 }))}`}
           >
             Heading 3
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={() => editor?.chain().focus().setParagraph().run()}
-            className={`justify-center ${
+            className={`justify-center ${getActiveButtonClasses(
               editor &&
               !editor.isActive("heading") &&
               editor.isActive("paragraph")
-                ? "bg-accent text-accent-background"
-                : ""
-            }`}
+            )}`}
           >
             Paragraph
           </DropdownMenuItem>
@@ -137,13 +129,11 @@ const TextEditorMenu = ({ editor }) => {
       </DropdownMenu>
 
       <Button
-        variant="outline"
+        variant={"outline"}
         type="button"
         size="icon"
         onClick={() => editor?.chain().focus().toggleBold().run()}
-        className={
-          editor?.isActive("bold") ? "bg-accent text-accent-foreground" : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive("bold"))}
       >
         <Bold className="h-4 w-4" />
       </Button>
@@ -152,9 +142,7 @@ const TextEditorMenu = ({ editor }) => {
         type="button"
         size="icon"
         onClick={() => editor?.chain().focus().toggleItalic().run()}
-        className={
-          editor?.isActive("italic") ? "bg-accent text-accent-foreground" : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive("italic"))}
       >
         <Italic className="h-4 w-4" />
       </Button>
@@ -163,11 +151,7 @@ const TextEditorMenu = ({ editor }) => {
         type="button"
         size="icon"
         onClick={() => editor?.chain().focus().toggleUnderline().run()}
-        className={
-          editor?.isActive("underline")
-            ? "bg-accent text-accent-foreground"
-            : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive("underline"))}
       >
         <UnderlineIcon className="h-4 w-4" />
       </Button>
@@ -176,9 +160,7 @@ const TextEditorMenu = ({ editor }) => {
         size="icon"
         type="button"
         onClick={setLink}
-        className={
-          editor?.isActive("link") ? "bg-accent text-accent-foreground" : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive("link"))}
       >
         <Link2Icon className="h-4 w-4" />
       </Button>
@@ -189,11 +171,7 @@ const TextEditorMenu = ({ editor }) => {
         type="button"
         size="icon"
         onClick={() => editor?.chain().focus().toggleSubscript().run()}
-        className={
-          editor?.isActive("subscript")
-            ? "bg-accent text-accent-foreground"
-            : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive("subscript"))}
       >
         <SubscriptIcon className="h-4 w-4" />
       </Button>
@@ -202,11 +180,7 @@ const TextEditorMenu = ({ editor }) => {
         type="button"
         size="icon"
         onClick={() => editor?.chain().focus().toggleSuperscript().run()}
-        className={
-          editor?.isActive("superscript")
-            ? "bg-accent text-accent-foreground"
-            : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive("superscript"))}
       >
         <SuperscriptIcon className="h-4 w-4" />
       </Button>
@@ -217,11 +191,7 @@ const TextEditorMenu = ({ editor }) => {
         type="button"
         size="icon"
         onClick={() => editor?.chain().focus().setTextAlign("left").run()}
-        className={
-          editor?.isActive({ textAlign: "left" })
-            ? "bg-accent text-accent-foreground"
-            : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive({ textAlign: "left" }))}
       >
         <AlignLeftIcon className="h-4 w-4" />
       </Button>
@@ -230,11 +200,7 @@ const TextEditorMenu = ({ editor }) => {
         size="icon"
         type="button"
         onClick={() => editor?.chain().focus().setTextAlign("center").run()}
-        className={
-          editor?.isActive({ textAlign: "center" })
-            ? "bg-accent text-accent-foreground"
-            : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive({ textAlign: "center" }))}
       >
         <AlignCenterIcon className="h-4 w-4" />
       </Button>
@@ -243,11 +209,7 @@ const TextEditorMenu = ({ editor }) => {
         type="button"
         size="icon"
         onClick={() => editor?.chain().focus().setTextAlign("right").run()}
-        className={
-          editor?.isActive({ textAlign: "right" })
-            ? "bg-accent text-accent-foreground"
-            : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive({ textAlign: "right" }))}
       >
         <AlignRightIcon className="h-4 w-4" />
       </Button>
@@ -256,11 +218,7 @@ const TextEditorMenu = ({ editor }) => {
         type="button"
         size="icon"
         onClick={() => editor?.chain().focus().setTextAlign("justify").run()}
-        className={
-          editor?.isActive({ textAlign: "justify" })
-            ? "bg-accent text-accent-foreground"
-            : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive({ textAlign: "justify" }))}
       >
         <AlignJustifyIcon className="h-4 w-4" />
       </Button>
@@ -271,11 +229,7 @@ const TextEditorMenu = ({ editor }) => {
         type="button"
         size="icon"
         onClick={() => editor?.chain().focus().toggleBulletList().run()}
-        className={
-          editor?.isActive("bulletList")
-            ? "bg-accent text-accent-foreground"
-            : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive("bulletList"))}
       >
         <List className="h-4 w-4" />
       </Button>
@@ -284,11 +238,7 @@ const TextEditorMenu = ({ editor }) => {
         size="icon"
         onClick={() => editor?.chain().focus().toggleOrderedList().run()}
         type="button"
-        className={
-          editor?.isActive("orderedList")
-            ? "bg-accent text-accent-foreground"
-            : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive("orderedList"))}
       >
         <ListOrdered className="h-4 w-4" />
       </Button>
@@ -299,11 +249,7 @@ const TextEditorMenu = ({ editor }) => {
         size={"icon"}
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
         type="button"
-        className={
-          editor?.isActive("blockquote")
-            ? "bg-accent text-accent-foreground"
-            : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive("blockquote"))}
       >
         <QuoteIcon className="h-4 w-4" />
       </Button>
@@ -312,11 +258,7 @@ const TextEditorMenu = ({ editor }) => {
         size={"icon"}
         onClick={() => editor.chain().focus().toggleHighlight().run()}
         type="button"
-        className={
-          editor?.isActive("highlight")
-            ? "bg-accent text-accent-foreground"
-            : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive("highlight"))}
       >
         <HighlighterIcon className="h-4 w-4" />
       </Button>
@@ -326,11 +268,7 @@ const TextEditorMenu = ({ editor }) => {
         size={"icon"}
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
         type="button"
-        className={
-          editor?.isActive("codeBlock")
-            ? "bg-accent text-accent-foreground"
-            : ""
-        }
+        className={getActiveButtonClasses(editor?.isActive("codeBlock"))}
       >
         <Code className="h-4 w-4" />
       </Button>
@@ -341,11 +279,7 @@ const TextEditorMenu = ({ editor }) => {
         size={"icon"}
         type="button"
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
-        className={
-          editor?.isActive("codeBlock")
-            ? "bg-accent text-accent-foreground"
-            : ""
-        }
+        className={""}
       >
         <SeparatorHorizontalIcon className="h-4 w-4" />
       </Button>

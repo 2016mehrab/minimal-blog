@@ -95,7 +95,7 @@ const PostForm = ({
     editorProps: {
       attributes: {
         class:
-          "prose max-w-none focus:outline-none min-h-[400px] p-2 md:p-4 border border-input rounded-md",
+          "h-full  overflow-y-scroll prose max-w-none focus:outline-none  p-2 md:p-4 border border-input rounded-md",
       },
     },
     onUpdate: () => {
@@ -227,9 +227,9 @@ const PostForm = ({
             )}
           </div>
 
-          <div className="space-y-2 md:space-y-3 h-[600px] md:h-[800px]  flex flex-col p-2">
+          <div className=" space-y-2 md:space-y-3 h-[600px] md:h-[800px]  flex flex-col p-2">
             <TextEditorMenu editor={editor} />
-            <EditorContent className="h-full  overflow-y-scroll" editor={editor} />
+            <EditorContent className="flex-grow min-h-0" editor={editor} />
             {errors.content && (
               <p className="text-red-500 text-sm mt-1">{errors.content}</p>
             )}
