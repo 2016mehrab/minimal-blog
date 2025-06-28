@@ -6,7 +6,7 @@ A modern, role-based content management system built with React and Spring Boot.
 
 [![Watch the video](https://i9.ytimg.com/vi_webp/QNZ_vnyupMM/mqdefault.webp?v=68606407&sqp=CIjHgcMG&rs=AOn4CLBnPSu76Lb1ywOBm1COrRMl6DBR8Q)](https://youtu.be/QNZ_vnyupMM?si=xGDKhOUq2x_WxF78)
 
-*Click on the image and you'll be redirected to the youtube video.*
+*Click on the image and you'll be redirected to the demo video on youtube.*
 
 
 **[Live Demo Website Here](https://minimal-blog-mehrab.netlify.app/home)**
