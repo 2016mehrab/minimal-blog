@@ -27,12 +27,12 @@ function getStatusBadge(status) {
     case "DRAFT":
       return {
         text: "Draft",
-        className: "bg-chart-2 text-secondary-foreground",
+        className: "bg-chart-4 text-secondary-foreground",
       };
     case "PENDING":
       return {
         text: "Pending",
-        className: "bg-chart-5 text-accent-foreground",
+        className: "bg-chart-3 text-accent-foreground",
       };
     default:
       return null;
@@ -45,8 +45,8 @@ const BlogGrid = ({ blogPosts, years, badge = false, authority = false }) => {
   const hasAuthority = authority;
 
   return (
-    <div className="grid grid-cols-[1fr_2fr_1fr] p-4 gap-4 ">
-      <aside className="grid grid-cols-[1fr_2fr] justify-items-center  ">
+    <div className="min-h-screen grid grid-cols-[1fr] md:grid-cols-[1fr_2fr_1fr] p-4 gap-4 ">
+      <aside className="hidden md:grid grid-cols-[1fr_2fr] justify-items-center  ">
         <div className=""></div>
         <div className="flex flex-col  space-y-4 w-full ">
           {" "}
