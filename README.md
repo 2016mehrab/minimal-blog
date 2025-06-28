@@ -2,6 +2,23 @@
 
 A modern, role-based content management system built with React and Spring Boot. This application provides a streamlined blogging platform with distinct user roles and comprehensive content management capabilities.
 
+## Live Demo & Video Walkthrough
+
+[![Watch the video](https://i9.ytimg.com/vi_webp/QNZ_vnyupMM/mqdefault.webp?v=68606407&sqp=CIjHgcMG&rs=AOn4CLBnPSu76Lb1ywOBm1COrRMl6DBR8Q)](https://youtu.be/QNZ_vnyupMM?si=xGDKhOUq2x_WxF78)
+
+*Click on the image and you'll be redirected to the youtube video.*
+
+
+**[Live Demo Website Here](https://minimal-blog-mehrab.netlify.app/home)**
+
+## Deployment
+
+This application is deployed using free-tier services:
+
+* **Frontend Hosting**: Netlify (Free Tier)
+* **Backend Hosting**: Railway.app (Free Tier)
+* **Database**: Neon (PostgreSQL, Free Tier)
+
 ## Features
 
 ### Role-Based Access Control
