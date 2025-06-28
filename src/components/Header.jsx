@@ -35,7 +35,7 @@ const Header = () => {
       : "text-sm font-medium transition-colors text-muted-foreground hover:text-primary";
 
   return (
-    <header className="sticky top-0 z-50  border-b  backdrop-blur supports-[backdrop-filter]:bg-background/60 grid grid-cols-[1fr_1fr] md:grid-cols-[1fr_2fr_1fr] p-4 justify-items-end md:justify-items-center bg-muted w-full ">
+    <header className="sticky top-0 z-50  border-b  backdrop-blur supports-[backdrop-filter]:bg-background/60 grid grid-cols-[1fr_1fr] md:grid-cols-[1fr_2fr_1fr] p-4 justify-items-end md:justify-items-center items-center bg-muted w-full ">
       <div className="">
         <Logo/>
       </div>
