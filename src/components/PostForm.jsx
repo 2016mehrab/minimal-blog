@@ -27,6 +27,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import Link from "@tiptap/extension-link";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
+import Image from "@tiptap/extension-image";
 
 let PostStatus = {
   DRAFT: "DRAFT",
@@ -89,6 +90,10 @@ const PostForm = ({
           target: "_blank",
         },
       }),
+      Image.configure({
+        inline:true,
+        allowBase64:true
+      })
     ],
 
     content: initialPost?.content || "",

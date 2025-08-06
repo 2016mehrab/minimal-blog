@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -26,10 +26,46 @@ import {
   Link2Icon,
   QuoteIcon,
   HighlighterIcon,
+  ImageUp,
 } from "lucide-react";
 import { Button } from "./ui/button";
+import { toast } from "sonner";
+import axios from "axios";
+import constants from "@/lib/constants";
+import { apiClient } from "@/services/apiClient";
 
 const TextEditorMenu = ({ editor }) => {
+  const fileInputRef = useRef(null); 
+
+  const handleImageUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const loadingToastId = toast.loading("Uploading image...")
+    try {
+      const res = await apiClient.post(constants.API_URL + "images", formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': undefined
+        }
+      })
+
+      editor?.chain().focus().setImage({ src: constants.IMAGE_BASE+"/" + res.data.url }).run()
+
+      toast.success("Image uploaded.", { id: loadingToastId });
+    } catch (error) {
+      console.error("Image upload error:", error);
+      toast.error("Failed to upload image. Please try again.", { id: loadingToastId });
+    }
+
+  };
   const setLink = () => {
     const previousUrl = editor?.getAttributes("link").href || "";
     const url = window.prompt("Enter the URL", previousUrl);
@@ -73,6 +109,7 @@ const TextEditorMenu = ({ editor }) => {
       : "";
   };
 
+
   return (
     <div className="bg-muted p-2 md:p-4 rounded-md flex gap-2 md:gap-3 flex-wrap items-center">
       <DropdownMenu>
@@ -82,10 +119,10 @@ const TextEditorMenu = ({ editor }) => {
             size="sm"
             className={
               editor &&
-              (editor.isActive("heading", { level: 1 }) ||
-                editor.isActive("heading", { level: 2 }) ||
-                editor.isActive("heading", { level: 3 }) ||
-                (!editor.isActive("heading") && editor.isActive("paragraph")))
+                (editor.isActive("heading", { level: 1 }) ||
+                  editor.isActive("heading", { level: 2 }) ||
+                  editor.isActive("heading", { level: 3 }) ||
+                  (!editor.isActive("heading") && editor.isActive("paragraph")))
                 ? getActiveButtonClasses(true)
                 : ""
             }
@@ -282,6 +319,22 @@ const TextEditorMenu = ({ editor }) => {
         className={""}
       >
         <SeparatorHorizontalIcon className="h-4 w-4" />
+      </Button>
+      <div className="h-6 w-px bg-border mx-1 md:mx-2" />
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+        accept="image/*"
+      />
+      <Button
+        variant="outline"
+        size="icon"
+        type="button"
+        onClick={handleImageUpload}
+      >
+        <ImageUp className="h-4 w-4" />
       </Button>
       <div className="h-6 w-px bg-border mx-1 md:mx-2" />
       <Button

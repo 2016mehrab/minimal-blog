@@ -70,6 +70,7 @@ export function RegisterForm({ className, ...props }) {
         console.log("Inside registerUser onError");
         setErrors({
           email: err.error.fieldErrors?.email || "",
+          name: err.error.fieldErrors?.name || "",
           password: err.error.fieldErrors?.password || "",
           general: err.error.message || "",
         });
@@ -94,7 +95,6 @@ export function RegisterForm({ className, ...props }) {
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
-
                 <Label htmlFor="name">Name</Label>
                 <Input
                   name="name"
