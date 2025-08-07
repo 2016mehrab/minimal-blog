@@ -62,7 +62,7 @@ const MyPendingBlogsComponent = () => {
     false;
 
   const blogPosts = data?.content || [];
-  const totalPages = data?.totalPages || 0;
+  const totalPages = data?.page?.totalPages || 0;
 
   if (blogPosts.length === 0) {
     <div>Nothing to show.</div>;

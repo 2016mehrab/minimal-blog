@@ -16,7 +16,7 @@ export const fetchPosts = async ({ queryKey }) => {
 
     params.append("page", Math.max(page - 1, 0));
     const URL = constants.POST_URL + `?${params.toString()}`;
-    const response = await apiClient.get(URL, null, { withCredentials: true });
+    const response = await apiClient.get(URL);
 
     console.log("fetched published", response.data);
     return response.data;
@@ -103,7 +103,8 @@ export const fetchDrafts = async ({ queryKey }) => {
 
     const URL = constants.POST_URL + "/drafts?" + params.toString();
 
-    const response = await apiClient.get(URL, null, { withCredentials: true });
+    const response = await apiClient.get(URL);
+
     console.log("fetch draft", response.data);
     return response.data;
   } catch (error) {

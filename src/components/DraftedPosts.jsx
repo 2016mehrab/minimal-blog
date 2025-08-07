@@ -46,7 +46,7 @@ const DraftedPosts = () => {
   if (isLoading || isLoadingCategories || isLoadingTags) return <Loader />;
 
   const blogPosts = data?.content || [];
-  const totalPages = data?.totalPages || 0;
+  const totalPages = data?.page?.totalPages || 0;
 
   const years = [
     ...new Set(

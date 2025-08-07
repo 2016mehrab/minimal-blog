@@ -44,7 +44,7 @@ const PublishedPosts = () => {
   if (isLoading || isLoadingCategories || isLoadingTags) return <Loader />;
 
   const blogPosts = data?.content || [];
-  const totalPages = data?.totalPages || 0;
+  const totalPages = data?.page?.totalPages || 0;
 
   function handlePageChange(newPage) {
     if (newPage >= 1 && newPage <= totalPages) {

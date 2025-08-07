@@ -25,7 +25,7 @@ const PaginationComponent = ({ currPage, totalPages, onPageChange }) => {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => onPageChange(currPage - 1)} // Use the prop handler
+                    onClick={() => onPageChange(currPage - 1)} 
                     disabled={currPage <= 1}
                     className="gap-1"
                   >
@@ -39,7 +39,7 @@ const PaginationComponent = ({ currPage, totalPages, onPageChange }) => {
                     variant="outline"
                     size="sm"
                     disabled={currPage >= totalPages}
-                    onClick={() => onPageChange(currPage + 1)} // Use the prop handler
+                    onClick={() => onPageChange(currPage + 1)} 
                     className="gap-1"
                   >
                     <span>Next</span>
